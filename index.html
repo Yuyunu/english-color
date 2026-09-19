@@ -3069,8 +3069,8 @@ function renderPlay() {
     const correct = chosen && chosen === state.cellTargets[i];
     const localNum = String(state.qiToLocalNum[qi] || '?');
     let bg = '#ffffff';
-    let inner = `<span style="color:#94a3b8">${localNum}</span>`;
-    let numColor = '#94a3b8';
+    let inner = `<span style="color:#334155">${localNum}</span>`;
+    let numColor = '#334155';
 
     if (chosen) {
       bg = state.paletteMap[chosen] ? state.paletteMap[chosen].hex : '#f3f4f6';
