@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>著色英文闖關</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #2b1a3d;
+    --ink-soft: #6b5b7a;
+    --accent: #ff6b9d;
+    --accent2: #7c5cff;
+    --cream: #fff8f0;
+  }
+  html, body { min-height: 100%; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Noto Sans CJK TC", "Microsoft JhengHei", -apple-system, system-ui, sans-serif;
+    background: radial-gradient(circle at 20% 10%, #ffe5f0 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, #e0e7ff 0%, transparent 50%),
+                radial-gradient(circle at 50% 90%, #fff5cc 0%, transparent 50%),
+                #fdf9f3;
+    color: var(--ink);
+    background-attachment: fixed;
+  }
+  .display-font { font-family: "Fredoka", "Noto Sans TC", system-ui; }
+  .title-gradient {
+    background: linear-gradient(120deg, #ff6b9d, #7c5cff 50%, #ff9a56);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* 關卡卡片 */
+  .puzzle-card {
+    background: linear-gradient(135deg, #ffffff 0%, #fffaf3 100%);
+    border-radius: 24px;
+    padding: 24px 20px;
+    box-shadow: 0 4px 20px rgba(124, 92, 255, 0.08), 0 1px 3px rgba(0,0,0,0.04);
+    border: 2px solid rgba(255,255,255,0.7);
+    transition: all .25s cubic-bezier(.2,.9,.3,1.2);
+    text-align: left;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .puzzle-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 50%, rgba(255,107,157,.08) 100%);
+    opacity: 0;
+    transition: opacity .25s;
+  }
+  .puzzle-card:hover {
+    transform: translateY(-4px) rotate(-.5deg);
+    box-shadow: 0 12px 30px rgba(124, 92, 255, 0.18), 0 2px 6px rgba(0,0,0,0.06);
+  }
+  .puzzle-card:hover::before { opacity: 1; }
+  .puzzle-card .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #7c5cff 0%, #ff6b9d 100%);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.5px;
+  }
+  /* 遊戲面板 */
+  .game-panel {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 28px;
+    padding: 24px;
+    box-shadow: 0 8px 40px rgba(124, 92, 255, 0.1);
+    border: 1px solid rgba(255,255,255,0.8);
+  }
+  /* 格子 */
+  .cell { transition: all .2s cubic-bezier(.2,.9,.3,1.2); user-select: none; }
+  .cell:not(.empty):hover {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 3px rgba(255,107,157,.5), 0 4px 12px rgba(0,0,0,.15);
+    z-index: 5;
+    position: relative;
+  }
+  .cell.filled { animation: fill .4s cubic-bezier(.4,1.8,.6,1); }
+  @keyframes fill {
+    0% { transform: scale(0.3) rotate(-15deg); opacity: 0; }
+    60% { transform: scale(1.2) rotate(8deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+  .cell .x-mark {
+    font-size: 24px; color: #ef4444; font-weight: 900;
+    text-shadow: 0 0 4px white, 0 0 4px white, 0 0 4px white;
+    animation: xpop .3s;
+  }
+  @keyframes xpop {
+    0% { transform: scale(0); }
+    70% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+  }
+  .cell.empty { background: rgba(255,255,255,.4); cursor: default; border: 1px dashed rgba(107, 91, 122, 0.15); }
+  .cell.empty:hover { transform: none; box-shadow: none; }
+  /* 選項按鈕 */
+  .opt-btn {
+    transition: all .18s cubic-bezier(.2,.9,.3,1.2);
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: 0.3px;
+  }
+  .opt-btn:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 24px rgba(0,0,0,.18);
+  }
+  .opt-btn:active { transform: translateY(-1px) scale(.98); }
+  /* Modal 動畫 */
+  .modal-panel {
+    animation: modalPop .35s cubic-bezier(.2,1.5,.4,1);
+  }
+  @keyframes modalPop {
+    0% { transform: scale(0.85) translateY(20px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+  }
+  .modal-backdrop { animation: fadeIn .2s; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  /* 主要按鈕 */
+  .btn-primary {
+    background: linear-gradient(135deg, #7c5cff 0%, #ff6b9d 100%);
+    color: white;
+    border: none;
+    font-weight: 700;
+    padding: 14px 28px;
+    border-radius: 16px;
+    box-shadow: 0 6px 16px rgba(124, 92, 255, 0.35);
+    transition: all .2s cubic-bezier(.2,.9,.3,1.2);
+    cursor: pointer;
+    letter-spacing: 0.5px;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(124, 92, 255, 0.5); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-secondary {
+    background: white;
+    color: var(--ink);
+    border: 2px solid rgba(124, 92, 255, 0.15);
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 14px;
+    transition: all .2s;
+    cursor: pointer;
+  }
+  .btn-secondary:hover { border-color: var(--accent2); background: #f5f0ff; }
+  /* 獎勵 emoji 動畫 */
+  .reward-emoji {
+    animation: rewardFloat 2.5s ease-in-out infinite;
+    filter: drop-shadow(0 8px 20px rgba(255, 107, 157, 0.4));
+  }
+  @keyframes rewardFloat {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-12px) rotate(3deg); }
+  }
+  .confetti-burst {
+    animation: confetti 1s ease-out;
+    background: radial-gradient(circle, #ffe5f0 0%, transparent 60%);
+  }
+  @keyframes confetti {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1.5); opacity: 0; }
+  }
+  /* 進度膠囊 */
+  .progress-pill {
+    background: linear-gradient(135deg, rgba(124, 92, 255, 0.1) 0%, rgba(255, 107, 157, 0.1) 100%);
+    color: var(--accent2);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body class="min-h-screen">
+
+<div id="app" class="max-w-5xl mx-auto p-4 md:p-8"></div>
+
+<script>
+// ============ 顏色 — 開新關卡時隨機生成 6 色配色 ============
+const LETTERS = ['A','B','C','D','E','F','G','H'];
+
+function hslToHex(h, s, l) {
+  s /= 100; l /= 100;
+  const k = n => (n + h / 30) % 12;
+  const a = s * Math.min(l, 1 - l);
+  const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+  const hex = x => Math.round(255 * x).toString(16).padStart(2, '0');
+  return `#${hex(f(0))}${hex(f(8))}${hex(f(4))}`;
+}
+function textColorFor(hex) {
+  const r = parseInt(hex.slice(1,3), 16);
+  const g = parseInt(hex.slice(3,5), 16);
+  const b = parseInt(hex.slice(5,7), 16);
+  const luminance = (0.299*r + 0.587*g + 0.114*b) / 255;
+  return luminance > 0.6 ? '#1f2937' : '#ffffff';
+}
+function generateRandomPalette() {
+  // 從色相環隨機挑一個起點,6 色平均分佈,飽和度與亮度加點隨機讓每張色彩感不同
+  const baseHue = Math.random() * 360;
+  const spread = 55 + Math.random() * 15; // 每格轉 55-70 度
+  const sat = 55 + Math.random() * 30;    // 55-85
+  const lit = 50 + Math.random() * 15;    // 50-65
+  const cols = [];
+  for (let i = 0; i < 6; i++) {
+    const h = (baseHue + i * spread + (Math.random() * 20 - 10)) % 360;
+    const s = sat + (Math.random() * 20 - 10);
+    const l = lit + (Math.random() * 15 - 7);
+    cols.push(hslToHex(h, Math.max(30, Math.min(95, s)), Math.max(35, Math.min(75, l))));
+  }
+  // 洗牌避免固定順序
+  for (let i = cols.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cols[i], cols[j]] = [cols[j], cols[i]];
+  }
+  return cols;
+}
+
+// ============ 關卡 (10×10 ~ 15×15; X = 空白格,不可點) ============
+// 每關 15×15 由 Gemini 設計
+const PUZZLES = [
+  // ---- 大雪人 15×15 (Gemini) ----
+  { name: '大雪人', emoji: '⛄',
+    colorRoles: { A:'snow-body', B:'hat-eyes-detail-dark', C:'scarf-red', D:'nose-carrot', E:'arm-branch', F:'sky-bg' },
+    grid: [
+      'FFFFFBBBBBFFFFF',
+      'FFFFFBBBBBFFFFF',
+      'FFFFFCCCCCFFFFF',
+      'FFFBBBBBBBBBFFF',
+      'FFFFABAAABAFFFF',
+      'FFFAAAADDAAFFFF',
+      'FEFFABABABAFFEF',
+      'FFEECCCCCCCEEFF',
+      'FFFAAAACAAAAFFF',
+      'FFAAAAABAAAAAFF',
+      'FFAAAAAAAAAAAFF',
+      'FFAAAAABAAAAAFF',
+      'FFAAAAAAAAAAAFF',
+      'FFFAAAAAAAAAFFF',
+      'FFFFAAAAAAAFFFF',
+    ]},
+  // ---- 聖誕老人 15×15 (Gemini) ----
+  { name: '聖誕老人', emoji: '🎅',
+    colorRoles: { A:'red-coat', B:'white-beard', C:'skin-face', D:'black-eye', E:'gold-belt', F:'sky-bg' },
+    grid: [
+      'FFFFFFAAAFFFFFF',
+      'FFFFFAAAAAFFFFF',
+      'FFBBFAAAAAFFFFF',
+      'FBBBBAAAAAFFFFF',
+      'FFBBFBBBBBBBBFF',
+      'FFFFBCCCCCBFFFF',
+      'FFFBBDCACDBBFFF',
+      'FFBBBCCCCCBBBFF',
+      'FFBBBBBBBBBBBFF',
+      'FBBBBBBBBBBBBBF',
+      'FBBBBAABAABBBBF',
+      'FFBBBAABAABBBFF',
+      'FFAAADDEDDAAAFF',
+      'FAAAAAABAAAAAAF',
+      'FAAAABBBBBAAAAF',
+    ]},
+  // ---- 柴犬 15×15 (Gemini) ----
+  { name: '柴犬', emoji: '🐕',
+    colorRoles: { A:'orange-fur', B:'white-belly', C:'pink-cheek', D:'black-nose', E:'sky-bg' },
+    grid: [
+      'EAAEEEEEEEEEAAE',
+      'ACCAEEEEEEEACCA',
+      'ACCAEEEEEEEACCA',
+      'AAAAAAAAAAAAAAA',
+      'EAAAAAAAAAAAAAE',
+      'EAAABAAAAABAAAE',
+      'EABBBDAAADBBBAE',
+      'EBBBBBBDBBBBBBE',
+      'EBCBBBDDDBBBCBE',
+      'EEBBBBBDBBBBBEE',
+      'EEEBBBBBBBBBEEE',
+      'EEAAABBBBBAAAEE',
+      'EAAAABBBBBAAAAE',
+      'EAAAABBBBBAAAAE',
+      'EAAAABBBBBAAAAE',
+    ]},
+  // ---- 聖誕企鵝 15×15 (Gemini) ----
+  { name: '聖誕企鵝', emoji: '🐧',
+    colorRoles: { A:'blue-body', B:'white-belly', C:'red-hat', D:'black-eye', E:'orange-nose', F:'sky-bg-light' },
+    grid: [
+      'FFFFFFFBFFFFFFF',
+      'FFFFFFCCCFFFFFF',
+      'FFFFFCCCCCFFFFF',
+      'FFFFAAAAAAAFFFF',
+      'FFFAAABBBAAAFFF',
+      'FFAABBDBDBBAAFF',
+      'FFAABBBEBBBAAFF',
+      'FAAABBEEEBBAAAF',
+      'FAAABBBBBBBAAAF',
+      'FAAABBBBBBBAAAF',
+      'FFAABBBBBBBAAFF',
+      'FFFABBBBBBBAFFF',
+      'FFFFBBBBBBBFFFF',
+      'FFFEEEFFFEEEFFF',
+      'FFEEEFFFFFEEEFF',
+    ]},
+  // ---- 米格魯 15×15 (Gemini) ----
+  { name: '米格魯', emoji: '🐶',
+    colorRoles: { A:'brown-fur', B:'white-belly', C:'red-collar', D:'black-eye-nose', E:'gold-tag', F:'grass-light-bg' },
+    grid: [
+      'FFFFFFAAAFFFFFF',
+      'FFAAAAABAAAAAFF',
+      'FAAAAAABAAAAAAF',
+      'FAAAAAABAAAAAAF',
+      'FAAAAABBBAAAAAF',
+      'FAAAAADBDAAAAAF',
+      'FAAABBBBBBBAAAF',
+      'FAAFBBDDDBBFAAF',
+      'FAAFBBBDBBBFAAF',
+      'FFFFFBBBBBFFFFF',
+      'FFFFFCCCCCFFFFF',
+      'FFFFFFFEFFFFFFF',
+      'FFFFBBBBBBBFFFF',
+      'FFFBBBBBBBBBFFF',
+      'FFFBBBBBBBBBFFF',
+    ]},
+  // ---- 向日葵 15×15 (Gemini) ----
+  { name: '向日葵', emoji: '🌻',
+    colorRoles: { A:'yellow-petal', B:'brown-seed', C:'green-stem', F:'sky-bg' },
+    grid: [
+      'FFFFFFAAAFFFFFF',
+      'FFAAFAAAAAFAAFF',
+      'FAAAAABBBAAAAAF',
+      'FAAAABBBBBAAAAF',
+      'FFAABBBBBBBAAFF',
+      'FAABBBBBBBBBAAF',
+      'FAAABBBBBBBAAAF',
+      'FAAAABBBBBAAAAF',
+      'FAAAAABBBAAAAAF',
+      'FFAAFAAAAAFAAFF',
+      'FFFFFFAAAFFFFFF',
+      'FCCFFFFCFFFFCCF',
+      'CCCCFFFCFFFCCCC',
+      'FCCCCFFCFFCCCCF',
+      'FFFCCCCCCCCCFFF',
+    ]},
+  // ---- 熊貓 15×15 (Gemini) ----
+  { name: '熊貓', emoji: '🐼',
+    colorRoles: { A:'white-body', B:'black-detail', C:'pink-cheek', D:'grass-light-bg' },
+    grid: [
+      'DBBDDDDDDDDDBBD',
+      'BBBBDDDDDDDBBBB',
+      'BBBDAAAAAADDBBB',
+      'DDAAAAAAAAAAADD',
+      'DAAAAAAAAAAAAAD',
+      'DABBAAAAAAABBAD',
+      'DABBAABBAAABBAD',
+      'DACAABBBBAAACAD',
+      'DDAAAABBAAAAADD',
+      'DDBBBBBBBBBBBDD',
+      'DBBBBBBBBBBBBBD',
+      'DBBDAAAAAADBBDD',
+      'DBDAAAAAAAADBDD',
+      'DDAAAAAAAAAAADD',
+      'DDDAAAAAAAAADDD',
+    ]},
+  // ---- 蘋果 15×15 (Gemini) ----
+  { name: '蘋果', emoji: '🍎',
+    colorRoles: { A:'red-apple', B:'brown-stem', C:'green-leaf', D:'white-highlight', F:'yellow-bg' },
+    grid: [
+      'FFFFFFFBFFFFFFF',
+      'FFFFFFFBCCFFFFF',
+      'FFFFFFFBCCCFFFF',
+      'FFAAAAFFCCAAAFF',
+      'FAAAAAAFAAAAAAF',
+      'FADDAAAAAAAAAAF',
+      'ADDAAAAAAAAAAAA',
+      'AAAAAAAAAAAAAAA',
+      'AAAAAAAAAAAAAAA',
+      'AAAAAAAAAAAAAAA',
+      'FAAAAAAAAAAAAAF',
+      'FAAAAAAAAAAAAAF',
+      'FFAAAAAAAAAAAFF',
+      'FFFAAAAFAAAAFFF',
+      'FFFFFAAFAAFFFFF',
+    ]},
+];
+
+// (舊 PUZZLES 陣列開始,以下到 `];` 都不會被讀到) —— 這段之後留著只是備份,若後續想恢復再用。
+const _OLD_PUZZLES_UNUSED_ = [
+  // ---- 蘋果 12×12 ----
+  { name: '蘋果', emoji: '🍎',
+    colorRoles: { A:'red-mid', B:'red-shadow', C:'pink-highlight', D:'green-leaf', E:'brown-stem', F:'background' },
+    grid: [
+      'FFFFFFEFFFFF',
+      'FFFFFFEFFFFF',
+      'FFFFFDDEFFFF',
+      'FFFCAAAAAAFF',
+      'FCCAAAAAABBF',
+      'FCAAAAAABBBF',
+      'FCAAAAABBBBF',
+      'FAAAAAABBBBF',
+      'FAAAAAABBBBF',
+      'FAAAAABBBBFF',
+      'FFAAAABBBBFF',
+      'FFFAABBBBFFF',
+    ]},
+  // ---- 星星 11×11 ----
+  { name: '星星', emoji: '⭐',
+    colorRoles: { A:'yellow-mid', B:'yellow-shadow', C:'white-highlight', D:'orange-outline', E:'sky-dot-star', F:'night-sky-bg' },
+    grid: [
+      'FFFFFAFFFFF',
+      'FFFFAAAFFFF',
+      'FEFFAAAFFEF',
+      'FDDDAAADDDF',
+      'DDCCAAABBDD',
+      'FDCAAAAAABF',
+      'FFDAAAAABDF',
+      'FDAAABBAAAD',
+      'DAADFEEFDAA',
+      'FEAFFFFFFAD',
+      'FFDFFEFFDFF',
+    ]},
+  // ---- 貓 13×13 ----
+  { name: '貓', emoji: '🐱',
+    colorRoles: { A:'gray-mid', B:'gray-shadow', C:'white-belly', D:'pink-nose', E:'green-eyes', F:'cream-bg' },
+    grid: [
+      'FFAAFFFFFAAFF',
+      'FAADAFFFADAAF',
+      'FAAAAAAAAAAAF',
+      'FAAEAAAAAEAAF',
+      'FAAAADAAAAAAF',
+      'FFAAABAAAAAFF',
+      'FFFAAAAAAAFFF',
+      'FFAAACCCAAAFF',
+      'FAAACCCCCAAAF',
+      'FAAACCCCCAABF',
+      'FAAACCCCCABBF',
+      'FAAACCCCCBBBF',
+      'FFAAACCCABBFF',
+    ]},
+  // ---- 狗 13×13 ----
+  { name: '狗', emoji: '🐶',
+    colorRoles: { A:'brown-mid', B:'brown-shadow', C:'cream-belly', D:'black-eye-nose', E:'red-tongue', F:'grass-bg' },
+    grid: [
+      'FFAAAFFFAAAFF',
+      'FAAAAAFAAAAAF',
+      'FAAAAAAAAAAAF',
+      'FAAAAAAAAAAAF',
+      'FAADAAAAADAAF',
+      'FAAAAADDAAAAF',
+      'FFAAAAEEAAAAF',
+      'FFAAAAAAAAAFF',
+      'FFAACCCCCAAFF',
+      'FAACCCCCCCABF',
+      'FAACCCCCCBBBF',
+      'FAAAAAAAABBBF',
+      'FFFFFFFFFFFFF',
+    ]},
+  // ---- 咖啡杯 12×12 ----
+  { name: '咖啡杯', emoji: '☕',
+    colorRoles: { A:'mug-white', B:'mug-shadow', C:'mug-highlight', D:'coffee-brown', E:'steam-white', F:'wood-bg' },
+    grid: [
+      'FFFCFFCFFFFF',
+      'FFFFCFFCFFFF',
+      'FFCFFFFFFFFF',
+      'FAAAAAAAAFFF',
+      'FADDDDDDDAFF',
+      'AADDDDDDDAAF',
+      'ACADDDDDDAFA',
+      'ACADDDDDDAFA',
+      'AAADDDDDDAAA',
+      'FABDDDDDDBAF',
+      'FAABBBBBBAAF',
+      'FFFFFFFFFFFF',
+    ]},
+  // ---- 蛋糕 13×13 ----
+  { name: '蛋糕', emoji: '🎂',
+    colorRoles: { A:'pink-frosting', B:'cake-shadow', C:'cream-cake-body', D:'red-cherry', E:'candle-flame-yellow', F:'kitchen-bg' },
+    grid: [
+      'FFFFFFEFFFFFF',
+      'FFFFFEEEFFFFF',
+      'FFFFFFAFFFFFF',
+      'FFFFFFAFFFFFF',
+      'FFAAAAAAAAAFF',
+      'FFADDAAADDAFF',
+      'FCCCCCCCCCCCF',
+      'FCCBCCBCCBCCF',
+      'FAAAAAAAAAAAF',
+      'FCCCCCCCCCCCF',
+      'FCCBCCBCCBCCF',
+      'FAAAAAAAAAAAF',
+      'FFFCCCCCCCFFF',
+    ]},
+  // ---- 大樹 14×14 ----
+  { name: '大樹', emoji: '🌳',
+    colorRoles: { A:'green-mid', B:'green-shadow-ground', C:'green-highlight', D:'brown-trunk', E:'red-apple', F:'sky-bg' },
+    grid: [
+      'FFFFCCAAAAFFFF',
+      'FFFCAAAAAAABFF',
+      'FFCAEAAAAAABBF',
+      'FCAAAAAAAAAABF',
+      'CAAAAEAAAAEABF',
+      'CAAAAAAAAAAABB',
+      'CAAAAAEAAAAABB',
+      'FAAAAAAAAAABBF',
+      'FCAAAAAAAAABBF',
+      'FFAAAAAAAAABFF',
+      'FFFFFDDDDFFFFF',
+      'FFFFFDDDDFFFFF',
+      'FFFFFDDDDFFFFF',
+      'BBBBBBBBBBBBBB',
+    ]},
+  // ---- 雪人 12×12 (GPT) ----
+  { name: '雪人', emoji: '⛄',
+    colorRoles: { A:'snow-light', B:'snow-mid', C:'snow-shadow', D:'charcoal-detail', E:'carrot-scarf', F:'winter-bg' },
+    grid: [
+      'FFFFFFFFFFFF',
+      'FFFFAAAFFFFF',
+      'FFFABBBAFFFF',
+      'FFFADBAAFFFF',
+      'FFFABBBAFFFF',
+      'FFFFEEEFFFFF',
+      'FFFBAAABFFFF',
+      'FFBAAAAABFFF',
+      'FFBAEAEABFFF',
+      'FFBAADAABFFF',
+      'FFFBBBBBFFFF',
+      'FFFFFFFFFFFF',
+    ]},
+  // ---- 房子 13×13 (GPT) ----
+  { name: '房子', emoji: '🏠',
+    colorRoles: { A:'wall-light', B:'wall-shadow', C:'roof-mid', D:'roof-dark', E:'door-window', F:'sky-bg' },
+    grid: [
+      'FFFFFFFFFFFFF',
+      'FFFFFFCFFFFFF',
+      'FFFFFCCCFFFFF',
+      'FFFFCCCCCFFFF',
+      'FFFCCCDDCCCFF',
+      'FFCCCDDDDCCCF',
+      'FFBAAAAAAABFF',
+      'FFBAEAAAEABFF',
+      'FFBAAAAAAABFF',
+      'FFBAAEEAAABFF',
+      'FFBAAEEAAABFF',
+      'FFBBBBBBBBBFF',
+      'FFFFFFFFFFFFF',
+    ]},
+  // ---- 熱氣球 13×13 (GPT) ----
+  { name: '熱氣球', emoji: '🎈',
+    colorRoles: { A:'balloon-light', B:'balloon-mid', C:'balloon-shadow', D:'stripe-accent', E:'basket-rope', F:'sky-bg' },
+    grid: [
+      'FFFFFFFFFFFFF',
+      'FFFFBAABFFFFF',
+      'FFFBAAAABFFFF',
+      'FFBADDDAABFFF',
+      'FFBADDDABBFFF',
+      'FFBADDDABBFFF',
+      'FFFADDDABFFFF',
+      'FFFBAAABBFFFF',
+      'FFFFBABFFFFFF',
+      'FFFFEAEFFFFFF',
+      'FFFFEEEFFFFFF',
+      'FFFFEEEFFFFFF',
+      'FFFFFFFFFFFFF',
+    ]},
+  // ---- 冰淇淋甜筒 11×11 (GPT) ----
+  { name: '冰淇淋', emoji: '🍦',
+    colorRoles: { A:'cream-highlight', B:'cream-mid', C:'cream-shadow', D:'cone-light', E:'cone-dark', F:'summer-bg' },
+    grid: [
+      'FFFFFFFFFFF',
+      'FFFFAAFFFFF',
+      'FFFBAABFFFF',
+      'FFBAAAAABFF',
+      'FFBAACAABFF',
+      'FFFBBBBBFFF',
+      'FFFFDDDFFFF',
+      'FFFFDEDFFFF',
+      'FFFFEDEFFFF',
+      'FFFFEDEFFFF',
+      'FFFFFEFFFFF',
+    ]},
+  // ---- 藍鯨 14×14 (GPT) ----
+  { name: '鯨魚', emoji: '🐋',
+    colorRoles: { A:'blue-highlight', B:'blue-mid', C:'blue-shadow', D:'white-belly', E:'water-splash', F:'ocean-bg' },
+    grid: [
+      'FFFFFFFFFFFFFF',
+      'FFFFFEFEFFFFFF',
+      'FFFFFEEEFFFFFF',
+      'FFFFFFFFFFFFFF',
+      'FFFFFFAABFFFFF',
+      'FFFFBAAAAABFFF',
+      'FFBBAAAAAABBFF',
+      'FBAAAAAAAAABBF',
+      'BAAAAAAAAACCBF',
+      'BBBDDDDDCCCCFF',
+      'FFFBBBBBCCFFFF',
+      'FFFFFBBCCFFFFF',
+      'FFFFFFFFFFFFFF',
+      'FFFFFFFFFFFFFF',
+    ]},
+  // ---- 城堡 14×14 (GPT) ----
+  { name: '城堡', emoji: '🏰',
+    colorRoles: { A:'stone-light', B:'stone-mid', C:'stone-shadow', D:'roof-banner', E:'door-window', F:'sky-bg' },
+    grid: [
+      'FFFFFFFFFFFFFF',
+      'FFDDFFFFDDFFFF',
+      'FFDDAFFDDAFFFF',
+      'FFDAAFFDAAFFFF',
+      'FFBAABFBAABFFF',
+      'FFBAEBFBEABFFF',
+      'FFBAABFBAABFFF',
+      'FBAAAAAAAAAABF',
+      'FBAEAAEEAAEABF',
+      'FBAAAAAAAAAABF',
+      'FBAAAAEAAAAABF',
+      'FBAAAAEEAAAABF',
+      'FBAAAAEEAAAABF',
+      'FBBBBBBBBBBBBF',
+    ]},
+  // ---- 彩虹 15×15 (GPT) ----
+  { name: '彩虹', emoji: '🌈',
+    colorRoles: { A:'outer-arc-light', B:'outer-arc-mid', C:'inner-arc', D:'lower-arc', E:'cloud-highlight', F:'sky-bg' },
+    grid: [
+      'FFFFFFFFFFFFFFF',
+      'FFFFFAAAAAFFFFF',
+      'FFFFAABBBAAFFFF',
+      'FFAABCCCCBBAAFF',
+      'FAABCCDDCCBBAFF',
+      'FABCCDFFDCCBAFF',
+      'FABCDFFFFDCBAFF',
+      'FABCDFFFFDCBAFF',
+      'FABCDFFFFDCBAFF',
+      'FABCDFFFFDCBAFF',
+      'EEBCDFFFFDCBEEE',
+      'EEECDFFFFDCEEEE',
+      'EEEEFFFFFFFEEEE',
+      'EEEFFFFFFFFFEEE',
+      'FFFFFFFFFFFFFFF',
+    ]},
+  // ---- 雪人加強版 15×15 (Gemini) ----
+  { name: '大雪人', emoji: '⛄',
+    colorRoles: { A:'snow-body', B:'hat-eyes-detail-dark', C:'scarf-red', D:'nose-carrot', E:'arm-branch', F:'sky-bg' },
+    grid: [
+      'FFFFFBBBBBFFFFF',
+      'FFFFFBBBBBFFFFF',
+      'FFFFFCCCCCFFFFF',
+      'FFFBBBBBBBBBFFF',
+      'FFFFABAAABAFFFF',
+      'FFFAAAADDAAFFFF',
+      'FEFFABABABAFFEF',
+      'FFEECCCCCCCEEFF',
+      'FFFAAAACAAAAFFF',
+      'FFAAAAABAAAAAFF',
+      'FFAAAAAAAAAAAFF',
+      'FFAAAAABAAAAAFF',
+      'FFAAAAAAAAAAAFF',
+      'FFFAAAAAAAAAFFF',
+      'FFFFAAAAAAAFFFF',
+    ]},
+];
+
+// ============ 題庫 ============
+const QUESTIONS = [
+  // 答案 A (紅)
+  { w: 'apple',       ans: 'A', opts: ['蘋果','香蕉','橘子','葡萄','芒果','西瓜'] },
+  { w: 'strawberry',  ans: 'A', opts: ['草莓','檸檬','葡萄','奇異果','木瓜','水蜜桃'] },
+  { w: 'tomato',      ans: 'A', opts: ['番茄','馬鈴薯','洋蔥','紅蘿蔔','南瓜','蕃薯'] },
+  { w: 'cherry',      ans: 'A', opts: ['櫻桃','蘋果','葡萄','梨子','鳳梨','芒果'] },
+  { w: 'watermelon',  ans: 'A', opts: ['西瓜','蘋果','橘子','葡萄','檸檬','水梨'] },
+  { w: 'rose',        ans: 'A', opts: ['玫瑰','百合','向日葵','康乃馨','鬱金香','雛菊'] },
+  { w: 'blood',       ans: 'A', opts: ['血','汗','淚','唾液','脂肪','骨頭'] },
+  { w: 'fire',        ans: 'A', opts: ['火','水','風','土','雲','雨'] },
+  { w: 'love',        ans: 'A', opts: ['愛','恨','想','看','走','跳'] },
+  { w: 'angry',       ans: 'A', opts: ['生氣的','害怕的','疲倦的','無聊的','驚訝的','害羞的'] },
+  { w: 'hot',         ans: 'A', opts: ['熱的','冷的','溫的','涼的','悶的','潮濕的'] },
+  { w: 'stop',        ans: 'A', opts: ['停止','開始','繼續','等待','走動','跳躍'] },
+  { w: 'lip',         ans: 'A', opts: ['嘴唇','舌頭','牙齒','鼻子','耳朵','眉毛'] },
+  { w: 'heart',       ans: 'A', opts: ['心臟','肝臟','腎臟','肺','胃','腦'] },
+  { w: 'beautiful',   ans: 'A', opts: ['美麗的','老的','快的','髒的','深的','高的'] },
+  { w: 'dangerous',   ans: 'A', opts: ['危險的','安全的','冷的','大的','亮的','遠的'] },
+  { w: 'important',   ans: 'A', opts: ['重要的','有趣的','容易的','便宜的','快樂的','緊張的'] },
+  { w: 'hate',        ans: 'A', opts: ['討厭','喜歡','忽略','原諒','記得','忘記'] },
+  { w: 'warm',        ans: 'A', opts: ['溫暖的','寒冷的','潮濕的','乾燥的','悶熱的','涼爽的'] },
+  { w: 'brave',       ans: 'A', opts: ['勇敢的','害怕的','害羞的','驕傲的','謙虛的','誠實的'] },
+  { w: 'burn',        ans: 'A', opts: ['燃燒','融化','凍結','漂浮','沉沒','蒸發'] },
+  { w: 'flag',        ans: 'A', opts: ['旗子','旗桿','傘','風車','風箏','布條'] },
+  { w: 'dragon',      ans: 'A', opts: ['龍','鳳凰','麒麟','老虎','獅子','大象'] },
+  { w: 'lantern',     ans: 'A', opts: ['燈籠','蠟燭','燈泡','火把','手電筒','油燈'] },
+  { w: 'envelope',    ans: 'A', opts: ['信封','郵票','信紙','明信片','包裹','便條'] },
+  { w: 'kiss',        ans: 'A', opts: ['親吻','擁抱','握手','揮手','點頭','鞠躬'] },
+  { w: 'crab',        ans: 'A', opts: ['螃蟹','蝦子','龍蝦','貝殼','海星','章魚'] },
+  { w: 'chili',       ans: 'A', opts: ['辣椒','薑','蒜頭','洋蔥','蔥','花椒'] },
+  { w: 'wine',        ans: 'A', opts: ['葡萄酒','啤酒','果汁','汽水','咖啡','紅茶'] },
+  { w: 'sunrise',     ans: 'A', opts: ['日出','日落','月光','星光','夜晚','正午'] },
+  { w: 'mad',         ans: 'A', opts: ['憤怒的','冷靜的','平靜的','困惑的','失望的','無聊的'] },
+  { w: 'anger',       ans: 'A', opts: ['憤怒','快樂','悲傷','驚訝','恐懼','厭惡'] },
+  { w: 'spicy',       ans: 'A', opts: ['辣的','甜的','酸的','苦的','鹹的','澀的'] },
+  { w: 'hurt',        ans: 'A', opts: ['受傷','痊癒','休息','移動','跑步','跳躍'] },
+  { w: 'fever',       ans: 'A', opts: ['發燒','咳嗽','流鼻涕','頭痛','肚子痛','喉嚨痛'] },
+  { w: 'summer',      ans: 'A', opts: ['夏天','春天','秋天','冬天','雨季','乾季'] },
+  { w: 'flame',       ans: 'A', opts: ['火焰','煙霧','灰燼','火花','餘燼','熱氣'] },
+  { w: 'brick',       ans: 'A', opts: ['磚頭','石頭','木頭','水泥','鋼筋','玻璃'] },
+  { w: 'valentine',   ans: 'A', opts: ['情人節','聖誕節','萬聖節','母親節','父親節','兒童節'] },
+  { w: 'rooster',     ans: 'A', opts: ['公雞','母雞','小雞','火雞','鴨子','鵝'] },
+  { w: 'meat',        ans: 'A', opts: ['肉','蛋','奶','菜','飯','麵'] },
+  { w: 'beef',        ans: 'A', opts: ['牛肉','豬肉','雞肉','羊肉','鴨肉','魚肉'] },
+  { w: 'pizza',       ans: 'A', opts: ['披薩','漢堡','熱狗','三明治','壽司','沙拉'] },
+  { w: 'balloon',     ans: 'A', opts: ['氣球','風箏','紙飛機','陀螺','娃娃','彈珠'] },
+  { w: 'candle',      ans: 'A', opts: ['蠟燭','火柴','打火機','燈籠','手電筒','油燈'] },
+
+  // 答案 B (橘)
+  { w: 'orange',      ans: 'B', opts: ['蘋果','橘子','香蕉','葡萄','芒果','西瓜'] },
+  { w: 'carrot',      ans: 'B', opts: ['番茄','紅蘿蔔','馬鈴薯','洋蔥','南瓜','玉米'] },
+  { w: 'autumn',      ans: 'B', opts: ['春天','秋天','夏天','冬天','雨天','晴天'] },
+  { w: 'sunset',      ans: 'B', opts: ['日出','日落','月亮','星星','雲朵','天空'] },
+  { w: 'pumpkin',     ans: 'B', opts: ['番茄','南瓜','茄子','青椒','芋頭','地瓜'] },
+  { w: 'tiger',       ans: 'B', opts: ['獅子','老虎','大象','長頸鹿','斑馬','猴子'] },
+  { w: 'basketball',  ans: 'B', opts: ['棒球','籃球','足球','排球','網球','桌球'] },
+  { w: 'fox',         ans: 'B', opts: ['狼','狐狸','狗','貓','熊','兔子'] },
+  { w: 'juice',       ans: 'B', opts: ['牛奶','果汁','汽水','咖啡','紅茶','啤酒'] },
+  { w: 'bread',       ans: 'B', opts: ['米飯','麵包','麵條','餃子','蛋糕','餅乾'] },
+  { w: 'mango',       ans: 'B', opts: ['蘋果','芒果','橘子','葡萄','檸檬','西瓜'] },
+  { w: 'papaya',      ans: 'B', opts: ['西瓜','木瓜','鳳梨','香蕉','火龍果','奇異果'] },
+  { w: 'peach',       ans: 'B', opts: ['蘋果','桃子','李子','梨子','杏子','橘子'] },
+  { w: 'shrimp',      ans: 'B', opts: ['魚','蝦子','螃蟹','貝殼','章魚','海參'] },
+  { w: 'squirrel',    ans: 'B', opts: ['兔子','松鼠','老鼠','刺蝟','浣熊','鼬鼠'] },
+
+  // 答案 C (黃)
+  { w: 'banana',      ans: 'C', opts: ['蘋果','橘子','香蕉','葡萄','芒果','西瓜'] },
+  { w: 'lemon',       ans: 'C', opts: ['蘋果','西瓜','檸檬','草莓','奇異果','芭樂'] },
+  { w: 'sun',         ans: 'C', opts: ['月亮','星星','太陽','雲朵','彩虹','雨滴'] },
+  { w: 'gold',        ans: 'C', opts: ['銀','銅','黃金','鐵','鑽石','珍珠'] },
+  { w: 'star',        ans: 'C', opts: ['月亮','太陽','星星','雲朵','彩虹','流星'] },
+  { w: 'happy',       ans: 'C', opts: ['傷心的','生氣的','快樂的','害怕的','疲倦的','緊張的'] },
+  { w: 'cheese',      ans: 'C', opts: ['牛奶','麵包','起司','蛋糕','餅乾','火腿'] },
+  { w: 'corn',        ans: 'C', opts: ['稻米','小麥','玉米','大豆','花生','高粱'] },
+  { w: 'butter',      ans: 'C', opts: ['牛奶','麵包','奶油','起司','優格','冰淇淋'] },
+  { w: 'egg',         ans: 'C', opts: ['牛奶','麵包','雞蛋','起司','豆腐','肉'] },
+  { w: 'letter',      ans: 'C', opts: ['字典','報紙','信','雜誌','日記','小說'] },
+  { w: 'bright',      ans: 'C', opts: ['黑暗的','安靜的','明亮的','混濁的','空的','舊的'] },
+  { w: 'duck',        ans: 'C', opts: ['母雞','小雞','鴨子','火雞','鵝','鴿子'] },
+  { w: 'chick',       ans: 'C', opts: ['雞蛋','母雞','小雞','小鴨','公雞','幼鳥'] },
+  { w: 'taxi',        ans: 'C', opts: ['公車','校車','計程車','火車','捷運','貨車'] },
+  { w: 'pineapple',   ans: 'C', opts: ['蘋果','木瓜','鳳梨','葡萄','西瓜','芒果'] },
+  { w: 'moon',        ans: 'C', opts: ['太陽','星星','月亮','雲朵','彩虹','流星'] },
+  { w: 'honey',       ans: 'C', opts: ['糖','果醬','蜂蜜','奶油','楓糖','煉乳'] },
+  { w: 'bee',         ans: 'C', opts: ['螞蟻','蒼蠅','蜜蜂','蝴蝶','蜻蜓','蚊子'] },
+  { w: 'sunny',       ans: 'C', opts: ['多雲的','下雨的','晴朗的','刮風的','下雪的','起霧的'] },
+  { w: 'yellow',      ans: 'C', opts: ['紅色','綠色','黃色','藍色','紫色','橘色'] },
+  { w: 'shine',       ans: 'C', opts: ['閃爍','熄滅','發光','融化','燃燒','搖晃'] },
+  { w: 'lamp',        ans: 'C', opts: ['蠟燭','手電筒','燈','火把','油燈','鏡子'] },
+  { w: 'treasure',    ans: 'C', opts: ['垃圾','工具','寶藏','武器','食物','衣服'] },
+  { w: 'crown',       ans: 'C', opts: ['王座','權杖','皇冠','戒指','項鍊','手鐲'] },
+  { w: 'cake',        ans: 'C', opts: ['麵包','餅乾','蛋糕','冰淇淋','布丁','奶酪'] },
+  { w: 'cookie',      ans: 'C', opts: ['麵包','蛋糕','餅乾','麵條','披薩','壽司'] },
+  { w: 'giraffe',     ans: 'C', opts: ['大象','斑馬','長頸鹿','獅子','老虎','猴子'] },
+  { w: 'money',       ans: 'C', opts: ['信用卡','支票','錢','鈔票','硬幣','發票'] },
+  { w: 'rich',        ans: 'C', opts: ['貧窮的','平凡的','有錢的','忙碌的','年輕的','快樂的'] },
+  { w: 'smile',       ans: 'C', opts: ['大笑','哭泣','微笑','驚訝','發呆','皺眉'] },
+  { w: 'laugh',       ans: 'C', opts: ['哭','喊','笑','唱','說','聽'] },
+  { w: 'lightning',   ans: 'C', opts: ['雷聲','風','閃電','雪','冰雹','霧'] },
+  { w: 'jewel',       ans: 'C', opts: ['木頭','石頭','珠寶','塑膠','金屬','紙'] },
+  { w: 'wheat',       ans: 'C', opts: ['稻米','燕麥','小麥','玉米','大麥','黑麥'] },
+  { w: 'lion',        ans: 'C', opts: ['老虎','花豹','獅子','狼','熊','狐狸'] },
+  { w: 'sunflower',   ans: 'C', opts: ['玫瑰','百合','向日葵','鬱金香','康乃馨','雛菊'] },
+  { w: 'daisy',       ans: 'C', opts: ['玫瑰','向日葵','雛菊','鬱金香','蘭花','梅花'] },
+  { w: 'cheer',       ans: 'C', opts: ['安慰','擁抱','歡呼','鼓掌','敬禮','鞠躬'] },
+  { w: 'cheerful',    ans: 'C', opts: ['憂鬱的','害羞的','開朗的','安靜的','緊張的','疲倦的'] },
+  { w: 'pancake',     ans: 'C', opts: ['吐司','蛋餅','鬆餅','漢堡','三明治','披薩'] },
+  { w: 'king',        ans: 'C', opts: ['皇后','公主','國王','王子','大臣','士兵'] },
+  { w: 'curry',       ans: 'C', opts: ['番茄醬','沙拉醬','咖哩','美乃滋','醬油','辣醬'] },
+  { w: 'pear',        ans: 'C', opts: ['蘋果','桃子','梨子','李子','葡萄','橘子'] },
+  { w: 'firefly',     ans: 'C', opts: ['蜜蜂','蝴蝶','螢火蟲','蜻蜓','蚊子','蟬'] },
+
+  // 答案 D (綠)
+  { w: 'tree',        ans: 'D', opts: ['花','草','葉子','樹','果實','種子'] },
+  { w: 'leaf',        ans: 'D', opts: ['花','草','果實','葉子','樹','根'] },
+  { w: 'grass',       ans: 'D', opts: ['花','樹','果實','草','種子','土壤'] },
+  { w: 'forest',      ans: 'D', opts: ['沙漠','海洋','山','森林','河流','湖泊'] },
+  { w: 'vegetable',   ans: 'D', opts: ['水果','肉類','甜點','蔬菜','飲料','穀類'] },
+  { w: 'spring',      ans: 'D', opts: ['冬天','夏天','秋天','春天','雨季','乾季'] },
+  { w: 'frog',        ans: 'D', opts: ['蟾蜍','蝌蚪','蜥蜴','青蛙','壁虎','烏龜'] },
+  { w: 'park',        ans: 'D', opts: ['車站','醫院','超市','公園','學校','餐廳'] },
+  { w: 'plant',       ans: 'D', opts: ['動物','昆蟲','岩石','植物','水','空氣'] },
+  { w: 'cucumber',    ans: 'D', opts: ['絲瓜','南瓜','苦瓜','小黃瓜','冬瓜','西瓜'] },
+  { w: 'salad',       ans: 'D', opts: ['湯','三明治','漢堡','沙拉','披薩','壽司'] },
+  { w: 'lettuce',     ans: 'D', opts: ['菠菜','高麗菜','花椰菜','生菜','空心菜','A菜'] },
+  { w: 'green',       ans: 'D', opts: ['紅色','黃色','藍色','綠色','紫色','橘色'] },
+  { w: 'bamboo',      ans: 'D', opts: ['松樹','柳樹','楓樹','竹子','梅樹','榕樹'] },
+  { w: 'broccoli',    ans: 'D', opts: ['高麗菜','菠菜','大白菜','花椰菜','萵苣','芥藍'] },
+
+  // 答案 E (藍)
+  { w: 'sky',         ans: 'E', opts: ['山','海','路','雲','天空','雨'] },
+  { w: 'ocean',       ans: 'E', opts: ['湖','河','池塘','溪流','海洋','瀑布'] },
+  { w: 'river',       ans: 'E', opts: ['湖','海','池塘','溪流','河流','瀑布'] },
+  { w: 'water',       ans: 'E', opts: ['火','土','風','木','水','金'] },
+  { w: 'rain',        ans: 'E', opts: ['雪','風','雲','霧','雨','冰雹'] },
+  { w: 'sad',         ans: 'E', opts: ['快樂的','生氣的','興奮的','緊張的','傷心的','害怕的'] },
+  { w: 'whale',       ans: 'E', opts: ['海豚','鯊魚','海龜','章魚','鯨魚','水母'] },
+  { w: 'jeans',       ans: 'E', opts: ['襯衫','外套','裙子','毛衣','牛仔褲','西裝'] },
+  { w: 'cold',        ans: 'E', opts: ['熱的','溫的','涼的','燙的','冷的','悶的'] },
+  { w: 'lake',        ans: 'E', opts: ['海','井','池塘','水庫','湖','溪'] },
+  { w: 'blue',        ans: 'E', opts: ['紅色','橘色','黃色','綠色','藍色','紫色'] },
+  { w: 'ice',         ans: 'E', opts: ['雨','雪','霧','霜','冰','水'] },
+  { w: 'snow',        ans: 'E', opts: ['雨','霧','雲','冰','雪','霜'] },
+  { w: 'sea',         ans: 'E', opts: ['湖','河','池塘','溪流','海','瀑布'] },
+  { w: 'wave',        ans: 'E', opts: ['沙灘','風','漩渦','泡沫','海浪','水滴'] },
+  { w: 'cloud',       ans: 'E', opts: ['雨','雪','風','霧','雲','霜'] },
+  { w: 'cool',        ans: 'E', opts: ['熱的','溫的','冷的','燙的','涼的','悶的'] },
+  { w: 'quiet',       ans: 'E', opts: ['吵鬧的','溫和的','緊張的','害羞的','安靜的','忙碌的'] },
+  { w: 'calm',        ans: 'E', opts: ['興奮的','緊張的','害怕的','急躁的','平靜的','煩躁的'] },
+  { w: 'tear',        ans: 'E', opts: ['汗水','鼻涕','口水','血','眼淚','唾液'] },
+  { w: 'cry',         ans: 'E', opts: ['笑','唱','叫','喊','哭','說'] },
+  { w: 'winter',      ans: 'E', opts: ['春天','夏天','秋天','雨季','冬天','乾季'] },
+  { w: 'frozen',      ans: 'E', opts: ['融化的','溫的','燙的','熱的','冷凍的','液態的'] },
+  { w: 'dolphin',     ans: 'E', opts: ['鯨魚','鯊魚','海龜','章魚','海豚','水母'] },
+  { w: 'fish',        ans: 'E', opts: ['蝦','蟹','貝殼','章魚','魚','海星'] },
+  { w: 'penguin',     ans: 'E', opts: ['海鷗','鴨子','鵝','鴕鳥','企鵝','老鷹'] },
+  { w: 'pond',        ans: 'E', opts: ['湖','海','溪','河','池塘','水庫'] },
+  { w: 'stream',      ans: 'E', opts: ['湖','海','井','河','溪流','瀑布'] },
+  { w: 'swim',        ans: 'E', opts: ['跑','跳','走','爬','游泳','站'] },
+  { w: 'dive',        ans: 'E', opts: ['跳','爬','走','跑','潛水','蹲'] },
+  { w: 'blueberry',   ans: 'E', opts: ['草莓','葡萄','櫻桃','覆盆莓','藍莓','桑葚'] },
+  { w: 'lonely',      ans: 'E', opts: ['熱鬧的','忙碌的','開心的','興奮的','孤獨的','害羞的'] },
+  { w: 'bored',       ans: 'E', opts: ['興奮的','緊張的','快樂的','害怕的','無聊的','驚訝的'] },
+  { w: 'shark',       ans: 'E', opts: ['海豚','鯨魚','海龜','章魚','鯊魚','水母'] },
+  { w: 'jellyfish',   ans: 'E', opts: ['海豚','鯊魚','海龜','章魚','水母','海星'] },
+  { w: 'seal',        ans: 'E', opts: ['海豚','企鵝','海獅','海龜','海豹','水獺'] },
+  { w: 'boat',        ans: 'E', opts: ['汽車','火車','飛機','腳踏車','小船','機車'] },
+  { w: 'ship',        ans: 'E', opts: ['汽車','火車','飛機','潛水艇','輪船','熱氣球'] },
+  { w: 'rainy',       ans: 'E', opts: ['晴朗的','多雲的','刮風的','下雪的','下雨的','起霧的'] },
+  { w: 'umbrella',    ans: 'E', opts: ['雨衣','手電筒','手套','帽子','雨傘','靴子'] },
+
+  // 答案 F (紫)
+  { w: 'grape',       ans: 'F', opts: ['蘋果','橘子','香蕉','芒果','草莓','葡萄'] },
+  { w: 'eggplant',    ans: 'F', opts: ['番茄','南瓜','青椒','玉米','紅蘿蔔','茄子'] },
+  { w: 'purple',      ans: 'F', opts: ['紅色','橘色','黃色','綠色','藍色','紫色'] },
+  { w: 'violet',      ans: 'F', opts: ['玫瑰','百合','向日葵','康乃馨','鬱金香','紫羅蘭'] },
+  { w: 'magic',       ans: 'F', opts: ['科學','藝術','運動','音樂','故事','魔法'] },
+  { w: 'dream',       ans: 'F', opts: ['計畫','工作','旅行','考試','習慣','夢'] },
+  { w: 'onion',       ans: 'F', opts: ['大蒜','薑','蔥','韭菜','辣椒','洋蔥'] },
+  { w: 'sweet',       ans: 'F', opts: ['苦的','酸的','鹹的','辣的','澀的','甜的'] },
+  { w: 'space',       ans: 'F', opts: ['地面','天空','海底','洞穴','沙漠','太空'] },
+  { w: 'plum',        ans: 'F', opts: ['蘋果','橘子','葡萄','桃子','梅子','李子'] },
+  { w: 'mystery',     ans: 'F', opts: ['真相','事實','答案','線索','推理','神秘'] },
+  { w: 'mysterious',  ans: 'F', opts: ['明顯的','清楚的','有趣的','無聊的','平凡的','神秘的'] },
+  { w: 'midnight',    ans: 'F', opts: ['清晨','早上','中午','下午','傍晚','午夜'] },
+  { w: 'dark',        ans: 'F', opts: ['明亮的','清楚的','溫暖的','刺眼的','柔和的','黑暗的'] },
+  { w: 'black',       ans: 'F', opts: ['白色','灰色','棕色','紅色','藍色','黑色'] },
+  { w: 'shadow',      ans: 'F', opts: ['光','鏡子','窗戶','煙霧','水影','影子'] },
+  { w: 'night',       ans: 'F', opts: ['清晨','早上','中午','下午','傍晚','夜晚'] },
+  { w: 'planet',      ans: 'F', opts: ['太陽','月亮','星星','彗星','小行星','行星'] },
+  { w: 'galaxy',      ans: 'F', opts: ['太陽','月亮','行星','宇宙','恆星','銀河'] },
+  { w: 'universe',    ans: 'F', opts: ['地球','太陽系','銀河','星系','空間','宇宙'] },
+  { w: 'rocket',      ans: 'F', opts: ['飛機','衛星','太空梭','太空站','熱氣球','火箭'] },
+  { w: 'astronaut',   ans: 'F', opts: ['飛行員','科學家','太空梭','外星人','機長','太空人'] },
+  { w: 'alien',       ans: 'F', opts: ['機器人','人類','怪物','幽靈','鬼魂','外星人'] },
+  { w: 'witch',       ans: 'F', opts: ['公主','巫師','國王','皇后','仙女','女巫'] },
+  { w: 'wizard',      ans: 'F', opts: ['公主','國王','戰士','騎士','女巫','巫師'] },
+  { w: 'ghost',       ans: 'F', opts: ['妖怪','外星人','惡魔','天使','神明','鬼'] },
+  { w: 'spell',       ans: 'F', opts: ['祈禱','念詞','詩歌','歌謠','故事','咒語'] },
+  { w: 'royal',       ans: 'F', opts: ['平民的','高貴的','古老的','傳統的','神聖的','皇家的'] },
+  { w: 'queen',       ans: 'F', opts: ['公主','侍女','女僕','國王','王子','皇后'] },
+  { w: 'princess',    ans: 'F', opts: ['皇后','國王','王子','大臣','侍女','公主'] },
+  { w: 'prince',      ans: 'F', opts: ['國王','皇后','公主','大臣','騎士','王子'] },
+  { w: 'fantasy',     ans: 'F', opts: ['真實','歷史','科學','紀錄','事實','幻想'] },
+  { w: 'imagine',     ans: 'F', opts: ['記得','忘記','看見','聽見','發現','想像'] },
+  { w: 'creative',    ans: 'F', opts: ['傳統的','保守的','務實的','嚴肅的','平凡的','有創意的'] },
+  { w: 'unknown',     ans: 'F', opts: ['已知的','熟悉的','明顯的','公開的','清楚的','未知的'] },
+  { w: 'secret',      ans: 'F', opts: ['公開','消息','新聞','答案','線索','秘密'] },
+  { w: 'bat',         ans: 'F', opts: ['老鼠','貓頭鷹','燕子','麻雀','烏鴉','蝙蝠'] },
+  { w: 'spider',      ans: 'F', opts: ['螞蟻','蜜蜂','蒼蠅','蚊子','蟑螂','蜘蛛'] },
+  { w: 'cave',        ans: 'F', opts: ['山','河','森林','沙漠','海底','山洞'] },
+  { w: 'sleep',       ans: 'F', opts: ['起床','吃飯','工作','讀書','運動','睡覺'] },
+
+  // 答案 G (白) - 20 題; 正確答案放在 index 6
+  { w: 'milk',       ans: 'G', opts: ['果汁','汽水','咖啡','紅茶','啤酒','可樂','牛奶','熱可可'] },
+  { w: 'cotton',     ans: 'G', opts: ['絲綢','羊毛','麻布','尼龍','聚酯','毛皮','棉花','皮革'] },
+  { w: 'pearl',      ans: 'G', opts: ['鑽石','紅寶石','藍寶石','翡翠','水晶','珊瑚','珍珠','琥珀'] },
+  { w: 'sugar',      ans: 'G', opts: ['鹽','醋','醬油','蜂蜜','胡椒','味噌','糖','咖哩'] },
+  { w: 'salt',       ans: 'G', opts: ['糖','醋','醬油','蜂蜜','胡椒','味噌','鹽','咖哩'] },
+  { w: 'paper',      ans: 'G', opts: ['木頭','布料','塑膠','金屬','玻璃','橡膠','紙','石頭'] },
+  { w: 'bone',       ans: 'G', opts: ['血','肉','皮膚','脂肪','肌肉','神經','骨頭','關節'] },
+  { w: 'tooth',      ans: 'G', opts: ['嘴唇','舌頭','鼻子','耳朵','眉毛','下巴','牙齒','喉嚨'] },
+  { w: 'rice',       ans: 'G', opts: ['麵包','麵條','餃子','蛋糕','餅乾','披薩','米飯','壽司'] },
+  { w: 'swan',       ans: 'G', opts: ['鴨子','鵝','老鷹','麻雀','鴿子','孔雀','天鵝','企鵝'] },
+  { w: 'dove',       ans: 'G', opts: ['麻雀','烏鴉','老鷹','鴕鳥','鴨子','燕子','鴿子','孔雀'] },
+  { w: 'chalk',      ans: 'G', opts: ['鉛筆','原子筆','橡皮擦','蠟筆','水彩筆','麥克筆','粉筆','毛筆'] },
+  { w: 'cream',      ans: 'G', opts: ['牛奶','起司','優格','奶油','冰淇淋','煉乳','鮮奶油','布丁'] },
+  { w: 'tissue',     ans: 'G', opts: ['毛巾','抹布','浴巾','手帕','布','海綿','面紙','紗布'] },
+  { w: 'angel',      ans: 'G', opts: ['鬼','惡魔','妖怪','神明','外星人','幽靈','天使','精靈'] },
+  { w: 'sail',       ans: 'G', opts: ['槳','錨','船身','舵','煙囪','桅杆','船帆','救生圈'] },
+  { w: 'marshmallow',ans: 'G', opts: ['餅乾','蛋糕','布丁','果凍','巧克力','冰淇淋','棉花糖','糖果'] },
+  { w: 'flour',      ans: 'G', opts: ['糖','鹽','奶油','雞蛋','酵母','油','麵粉','奶粉'] },
+  { w: 'mask',       ans: 'G', opts: ['帽子','手套','圍巾','眼鏡','耳機','手帕','口罩','領帶'] },
+  { w: 'seagull',    ans: 'G', opts: ['麻雀','燕子','烏鴉','老鷹','鴕鳥','貓頭鷹','海鷗','鴿子'] },
+
+  // 答案 H (黑) - 20 題; 正確答案放在 index 7
+  { w: 'ink',        ans: 'H', opts: ['水','酒','顏料','油漆','醬油','咖啡','汽油','墨水'] },
+  { w: 'coal',       ans: 'H', opts: ['木頭','紙','塑膠','鐵','石油','鑽石','天然氣','煤炭'] },
+  { w: 'panda',      ans: 'H', opts: ['熊','老虎','獅子','狐狸','浣熊','無尾熊','斑馬','熊貓'] },
+  { w: 'crow',       ans: 'H', opts: ['麻雀','燕子','鴿子','老鷹','鴨子','孔雀','鴕鳥','烏鴉'] },
+  { w: 'pepper',     ans: 'H', opts: ['糖','鹽','醋','醬油','蜂蜜','味噌','咖哩','胡椒'] },
+  { w: 'tire',       ans: 'H', opts: ['方向盤','引擎','座椅','車窗','後照鏡','排氣管','煞車','輪胎'] },
+  { w: 'ninja',      ans: 'H', opts: ['武士','劍客','僧侶','俠客','騎士','戰士','海盜','忍者'] },
+  { w: 'chess',      ans: 'H', opts: ['撲克牌','麻將','大富翁','跳棋','五子棋','圍棋','象棋','西洋棋'] },
+  { w: 'blackboard', ans: 'H', opts: ['白板','海報','布告欄','螢幕','投影機','課本','講台','黑板'] },
+  { w: 'ant',        ans: 'H', opts: ['蜜蜂','蒼蠅','蚊子','蜘蛛','蝴蝶','蟑螂','蜻蜓','螞蟻'] },
+  { w: 'seed',       ans: 'H', opts: ['花','葉','根','莖','果實','土壤','肥料','種子'] },
+  { w: 'silhouette', ans: 'H', opts: ['光','影子','鏡子','照片','素描','水彩','油畫','剪影'] },
+  { w: 'charcoal',   ans: 'H', opts: ['木頭','煤炭','石頭','鐵','紙','蠟燭','火柴','木炭'] },
+  { w: 'oil',        ans: 'H', opts: ['水','汽油','酒精','醋','油漆','墨水','煤油','石油'] },
+  { w: 'raven',      ans: 'H', opts: ['麻雀','燕子','鴿子','老鷹','孔雀','貓頭鷹','海鷗','渡鴉'] },
+  { w: 'gorilla',    ans: 'H', opts: ['猴子','狒狒','紅毛猩猩','黑猩猩','人猿','長臂猿','狐猴','大猩猩'] },
+  { w: 'beetle',     ans: 'H', opts: ['螞蟻','蜜蜂','蒼蠅','蚊子','蜻蜓','蝴蝶','蟑螂','甲蟲'] },
+  { w: 'pupil',      ans: 'H', opts: ['眉毛','眼皮','睫毛','虹膜','眼白','眼淚','眼窩','瞳孔'] },
+  { w: 'octopus',    ans: 'H', opts: ['魚','蝦','螃蟹','水母','海星','海參','貝殼','章魚'] },
+  { w: 'vampire',    ans: 'H', opts: ['鬼','惡魔','狼人','殭屍','外星人','幽靈','女巫','吸血鬼'] },
+];
+
+// ============ 為舊題(6 opt)補上 G/H 位置的兩個誘答選項 ============
+const FILLER_POOLS = {
+  fruit: ['荔枝','龍眼','榴槤','奇異果','火龍果','紅棗','柿子','番石榴','山竹','蓮霧'],
+  veg:   ['芹菜','菠菜','空心菜','花椰菜','萵苣','苦瓜','冬瓜','秋葵','茭白筍','大白菜'],
+  animal:['浣熊','刺蝟','花豹','狸貓','袋鼠','無尾熊','土撥鼠','山羌','梅花鹿','水獺'],
+  bird:  ['麻雀','燕子','老鷹','啄木鳥','鸚鵡','孔雀','鴕鳥','鵜鶘','貓頭鷹','海鷗'],
+  sea:   ['海豚','鯨魚','海龜','章魚','水母','海星','海馬','海獅','珊瑚','海參'],
+  food:  ['壽司','拉麵','水餃','章魚燒','蚵仔煎','肉圓','蘿蔔糕','雞排','鹹酥雞','便當'],
+  dessert:['蛋塔','布丁','果凍','奶酪','鬆餅','馬卡龍','甜甜圈','棉花糖','冰棒','蛋糕捲'],
+  drink: ['豆漿','奶茶','熱可可','蘇打水','綠茶','拿鐵','氣泡水','蔬果汁','麥茶','檸檬水'],
+  color: ['粉紅色','棕色','灰色','金色','銀色','米色','咖啡色','淺藍色','桃紅色','墨綠色'],
+  adj:   ['認真的','聰明的','親切的','細心的','積極的','幽默的','負責的','有耐心的','熟練的','大方的'],
+  emotion:['興奮','驚訝','害羞','失望','困惑','擔心','放鬆','後悔','煩惱','感動'],
+  verb:  ['等待','觀察','思考','發現','出發','抵達','離開','回來','轉身','蹲下'],
+  weather:['晴朗','多雲','刮風','起霧','悶熱','乾燥','潮濕','梅雨','寒流','熱浪'],
+  place: ['車站','機場','港口','山谷','沙灘','山頂','洞穴','平原','高原','海岸'],
+  clothes:['帽子','手套','圍巾','背心','襪子','鞋子','外套','洋裝','大衣','領帶'],
+  body:  ['額頭','下巴','手腕','腳踝','膝蓋','手肘','肩膀','脖子','腰','背'],
+  vehicle:['貨車','消防車','救護車','拖車','機車','三輪車','電車','纜車','船艇','捷運'],
+  time:  ['清晨','傍晚','半夜','黎明','黃昏','週末','平日','正午','深夜','午後'],
+  royalty:['公爵','伯爵','侍衛','宮女','大臣','元帥','將軍','使者','法師','占卜師'],
+  fruit2:['杏子','番石榴','紅毛丹','山竹','無花果','葡萄柚','酪梨','椰子','荔枝','龍眼'],
+};
+
+function guessCategory(q) {
+  const optsAll = q.opts.join(',');
+  // color
+  if (/紅色|黃色|藍色|綠色|紫色|橘色|黑色|白色/.test(optsAll)) return 'color';
+  // adj (of 的)
+  const adjCount = q.opts.filter(o => o.endsWith('的')).length;
+  if (adjCount >= 3) return 'adj';
+  // seafood/sea life
+  if (/海豚|鯨魚|鯊魚|章魚|水母|海龜|海星|海豹|海獅|海鷗|企鵝/.test(optsAll)) return 'sea';
+  // fruits
+  if (/蘋果|香蕉|葡萄|橘子|檸檬|芒果|草莓|桃子|梨子|鳳梨|木瓜|西瓜|櫻桃/.test(optsAll)) return 'fruit';
+  // veg
+  if (/番茄|洋蔥|馬鈴薯|南瓜|茄子|青椒|紅蘿蔔|玉米|菠菜|高麗菜|花椰菜|萵苣|地瓜|芋頭|絲瓜|苦瓜|冬瓜|小黃瓜/.test(optsAll)) return 'veg';
+  // land animals
+  if (/獅子|老虎|大象|長頸鹿|斑馬|猴子|狐狸|松鼠|兔子|熊|狼|狗|貓|老鼠|刺蝟/.test(optsAll)) return 'animal';
+  // birds
+  if (/母雞|小雞|鴨子|火雞|鵝|鴿子|孔雀|老鷹|海鷗|鴕鳥/.test(optsAll)) return 'bird';
+  // vehicle
+  if (/汽車|火車|飛機|腳踏車|機車|貨車|捷運/.test(optsAll)) return 'vehicle';
+  // drink
+  if (/牛奶|果汁|汽水|咖啡|紅茶|啤酒|紅酒|葡萄酒/.test(optsAll)) return 'drink';
+  // desserts
+  if (/蛋糕|餅乾|布丁|冰淇淋|奶酪|鬆餅|三明治|吐司|漢堡|披薩|壽司/.test(optsAll)) return 'food';
+  // weather
+  if (/晴朗的|下雨的|多雲的|刮風的|下雪的|起霧的|多雲|晴天/.test(optsAll)) return 'weather';
+  // emotion / verb
+  if (/^(哭|笑|唱|說|聽|喊|叫|等|跑|跳|走)/.test(q.opts[0])) return 'verb';
+  // time
+  if (/清晨|早上|中午|下午|傍晚|夜晚|午夜|正午|深夜/.test(optsAll)) return 'time';
+  // royalty / fantasy
+  if (/國王|皇后|公主|王子|大臣|侍女|巫師|女巫|騎士|士兵/.test(optsAll)) return 'royalty';
+  // flowers
+  if (/玫瑰|百合|向日葵|康乃馨|鬱金香|雛菊|梅花|蘭花/.test(optsAll)) return 'flower';
+  return 'default';
+}
+
+const FLOWER_FILLER = ['茉莉','桃花','杜鵑','木蘭','紫藤','蓮花','菊花','牡丹','扶桑花','矢車菊'];
+const DEFAULT_FILLER = ['其他物品','奇怪的東西','特別的東西','熟悉的物品','神秘的東西','未知的東西','珍貴的物品','平常的東西','特殊的種類','一般的樣子'];
+
+function pickFillers(q, n = 2) {
+  const cat = guessCategory(q);
+  let pool = FILLER_POOLS[cat] || FLOWER_FILLER;
+  if (cat === 'flower') pool = FLOWER_FILLER;
+  if (cat === 'default') pool = DEFAULT_FILLER;
+  // remove any that already exist
+  pool = pool.filter(x => !q.opts.includes(x));
+  // deterministic pick based on q.w
+  let seed = 0;
+  for (const ch of q.w) seed = (seed * 33 + ch.charCodeAt(0)) & 0xffff;
+  const chosen = [];
+  for (let i = 0; i < n; i++) {
+    const idx = (seed + i * 7 + 3) % pool.length;
+    let pick = pool[idx];
+    let tries = 0;
+    while (chosen.includes(pick) && tries < pool.length) {
+      pick = pool[(idx + ++tries) % pool.length];
+    }
+    chosen.push(pick);
+  }
+  return chosen;
+}
+
+QUESTIONS.forEach(q => {
+  if (q.opts.length < 8) {
+    const need = 8 - q.opts.length;
+    const fillers = pickFillers(q, need);
+    // Ensure the correct answer is at the index matching q.ans.
+    // For ans A-F, opts[0..5] already has the correct answer at LETTERS.indexOf(q.ans).
+    // Just append fillers to reach length 8.
+    q.opts = q.opts.concat(fillers);
+  }
+  // sanity: correct answer at right index
+  // (for G/H questions the correct answer is already at index 6 or 7 in the raw data)
+});
+
+// ============ 狀態 ============
+let state = {
+  page: 'menu',
+  puzzleIdx: 0,
+  cellAnswers: [],
+  cellChosen: [],
+  currentCell: null,
+  checked: false,
+  showReward: false,
+};
+
+function puzzleWidth(pzi) { return PUZZLES[pzi].grid[0].length; }
+function puzzleHeight(pzi) { return PUZZLES[pzi].grid.length; }
+
+// 每關固定 25 題:多個格子共用一題,答一次全部同題號的格子一起著色
+const QUESTIONS_PER_PUZZLE = 25;
+
+function pickQuestionsForPuzzle(pzi) {
+  const g = PUZZLES[pzi].grid;
+  const flat = g.join('').split('');
+  const cellsByColor = {};
+  flat.forEach((letter, i) => {
+    if (letter === 'X') return;
+    (cellsByColor[letter] = cellsByColor[letter] || []).push(i);
+  });
+  const colorLetters = Object.keys(cellsByColor);
+  const totalCells = colorLetters.reduce((s, L) => s + cellsByColor[L].length, 0);
+
+  // 決定每個顏色分配幾題(至少 1 題,總和 = 25)
+  const qPerColor = {};
+  let totalQ = 0;
+  for (const L of colorLetters) {
+    qPerColor[L] = Math.max(1, Math.round(cellsByColor[L].length / totalCells * QUESTIONS_PER_PUZZLE));
+    totalQ += qPerColor[L];
+  }
+  // 微調到剛好 25
+  while (totalQ > QUESTIONS_PER_PUZZLE) {
+    let maxL = colorLetters[0];
+    for (const L of colorLetters) if (qPerColor[L] > qPerColor[maxL]) maxL = L;
+    if (qPerColor[maxL] <= 1) break;
+    qPerColor[maxL]--; totalQ--;
+  }
+  while (totalQ < QUESTIONS_PER_PUZZLE) {
+    let maxRatioL = colorLetters[0];
+    for (const L of colorLetters) {
+      const cur = cellsByColor[L].length / qPerColor[L];
+      const best = cellsByColor[maxRatioL].length / qPerColor[maxRatioL];
+      if (cur > best) maxRatioL = L;
+    }
+    qPerColor[maxRatioL]++; totalQ++;
+  }
+
+  // 每個顏色從題庫不重複抽出對應張數,把該色的格子平均分派到那幾題
+  const result = new Array(flat.length).fill(null);
+  for (const L of colorLetters) {
+    const pool = QUESTIONS.map((q, idx) => q.ans === L ? idx : -1).filter(x => x >= 0);
+    // Fisher-Yates
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    const questionsForColor = pool.slice(0, qPerColor[L]);
+    // 打散格子順序後 round-robin 分配
+    const cells = cellsByColor[L].slice();
+    for (let i = cells.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [cells[i], cells[j]] = [cells[j], cells[i]];
+    }
+    cells.forEach((cellIdx, k) => {
+      result[cellIdx] = questionsForColor[k % questionsForColor.length];
+    });
+  }
+  return result;
+}
+
+// 依 role 名稱關鍵字查對應的固定色相(h/s/l)
+const COLOR_BASES = {
+  // 紅色系
+  red:{h:0,s:75,l:52}, scarlet:{h:5,s:80,l:50}, cherry:{h:352,s:72,l:50},
+  rose:{h:345,s:60,l:60}, tomato:{h:8,s:75,l:55}, blood:{h:0,s:75,l:38},
+  scarf:{h:355,s:70,l:48}, banner:{h:350,s:70,l:48}, flag:{h:355,s:75,l:50},
+  ribbon:{h:355,s:70,l:50}, fire:{h:5,s:80,l:52}, flame:{h:15,s:85,l:55},
+  strawberry:{h:355,s:75,l:52}, lip:{h:355,s:65,l:55}, hurt:{h:0,s:70,l:50},
+  // 橘色系
+  orange:{h:25,s:85,l:55}, carrot:{h:22,s:85,l:55}, autumn:{h:28,s:75,l:52},
+  sunset:{h:18,s:85,l:60}, pumpkin:{h:28,s:85,l:55}, mango:{h:38,s:85,l:60},
+  // 黃色系
+  yellow:{h:50,s:90,l:60}, gold:{h:45,s:85,l:55}, sun:{h:48,s:88,l:60},
+  banana:{h:52,s:80,l:65}, star:{h:50,s:90,l:60}, corn:{h:52,s:80,l:65},
+  candle:{h:48,s:88,l:65}, cake:{h:40,s:65,l:78}, lemon:{h:55,s:90,l:65},
+  frosting:{h:335,s:60,l:80}, cream:{h:42,s:40,l:88},
+  // 綠色系
+  green:{h:125,s:55,l:45}, leaf:{h:108,s:60,l:38}, grass:{h:105,s:55,l:45},
+  forest:{h:130,s:55,l:35}, mint:{h:155,s:50,l:65}, plant:{h:120,s:55,l:42},
+  spring:{h:110,s:55,l:55},
+  // 藍色系
+  blue:{h:212,s:70,l:52}, ocean:{h:210,s:65,l:45}, water:{h:205,s:65,l:58},
+  sky:{h:200,s:55,l:75}, navy:{h:225,s:65,l:30}, whale:{h:220,s:60,l:40},
+  belly:{h:200,s:20,l:82}, splash:{h:195,s:65,l:65}, rain:{h:210,s:55,l:55},
+  jeans:{h:220,s:50,l:45}, cold:{h:200,s:45,l:70}, lake:{h:205,s:60,l:55},
+  arc:{h:210,s:65,l:55},
+  // 紫/粉色系
+  purple:{h:280,s:60,l:55}, violet:{h:275,s:55,l:55}, magic:{h:280,s:60,l:55},
+  grape:{h:290,s:60,l:45}, dream:{h:280,s:55,l:60}, eggplant:{h:285,s:55,l:38},
+  pink:{h:335,s:70,l:70}, sprinkle:{h:340,s:75,l:65},
+  // 棕色系
+  brown:{h:28,s:50,l:38}, wood:{h:30,s:45,l:42}, tan:{h:35,s:40,l:60},
+  stem:{h:28,s:55,l:32}, branch:{h:25,s:45,l:35}, trunk:{h:25,s:50,l:30},
+  bark:{h:25,s:45,l:32}, cone:{h:30,s:60,l:42}, basket:{h:30,s:55,l:40},
+  arm:{h:25,s:45,l:35},
+  // 石頭/灰
+  stone:{h:210,s:8,l:58}, gray:{h:0,s:0,l:55}, charcoal:{h:220,s:8,l:22},
+  detail:{h:0,s:0,l:22}, coal:{h:0,s:0,l:15}, eye:{h:0,s:0,l:12},
+  eyes:{h:0,s:0,l:12}, hat:{h:0,s:0,l:15},
+  // 白/雪
+  white:{h:0,s:0,l:96}, snow:{h:210,s:12,l:95}, foam:{h:0,s:0,l:97}, beard:{h:210,s:8,l:96},
+  // 膚色/聖誕元素
+  skin:{h:25,s:45,l:72}, face:{h:25,s:45,l:72}, santa:{h:0,s:78,l:46},
+  belt:{h:45,s:85,l:52},
+  // 黑
+  black:{h:0,s:0,l:15},
+  // 建築元素
+  wall:{h:35,s:35,l:65}, roof:{h:5,s:55,l:40}, door:{h:25,s:55,l:35},
+  window:{h:45,s:85,l:65},
+  balloon:{h:340,s:60,l:55}, stripe:{h:200,s:55,l:55}, body:{h:0,s:0,l:95},
+  // 背景/場景
+  bg:{h:200,s:22,l:88}, background:{h:200,s:22,l:88}, kitchen:{h:35,s:22,l:90},
+  summer:{h:200,s:30,l:85}, winter:{h:205,s:35,l:88}, night:{h:235,s:50,l:22},
+  cloud:{h:210,s:15,l:92}, ground:{h:30,s:20,l:70},
+};
+
+function colorFromRole(role) {
+  if (!role) return {h: Math.random()*360, s: 60, l: 55};
+  const r = role.toLowerCase();
+  const tokens = r.split(/[-_ ]/);
+  let base = null;
+  for (const t of tokens) {
+    if (COLOR_BASES[t]) { base = { ...COLOR_BASES[t] }; break; }
+  }
+  if (!base) base = {h: Math.random()*360, s: 55, l: 55};
+  // tone
+  const isLight = /light|highlight/.test(r);
+  const isDark = /dark|shadow/.test(r);
+  const isMid = /-mid$|_mid$| mid$| mid /.test(r);
+  if (isLight) base.l = Math.min(95, base.l + 15);
+  else if (isDark) base.l = Math.max(15, base.l - 18);
+  return base;
+}
+function hueDist(a, b) {
+  const d = Math.abs(a - b) % 360;
+  return d > 180 ? 360 - d : d;
+}
+function pickDistinctHue(usedHues, minDist = 40) {
+  for (let t = 0; t < 25; t++) {
+    const h = Math.random() * 360;
+    if (usedHues.every(u => hueDist(h, u) >= minDist)) return h;
+  }
+  return Math.random() * 360;
+}
+
+function pickPalette(pzi) {
+  const puzzle = PUZZLES[pzi];
+  const usedLetters = new Set();
+  puzzle.grid.join('').split('').forEach(c => { if (c !== 'X') usedLetters.add(c); });
+  const others = LETTERS.filter(L => !usedLetters.has(L));
+  for (let i = others.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [others[i], others[j]] = [others[j], others[i]];
+  }
+  const letters = LETTERS.filter(L => Array.from(usedLetters).concat(others).slice(0, 6).includes(L));
+  const roles = puzzle.colorRoles || {};
+  const usedHues = [];
+  const map = {};
+
+  // 這關實際用到的顏色:照 role 名稱給固定色相
+  for (const L of letters) {
+    if (usedLetters.has(L)) {
+      const role = roles[L];
+      const {h, s, l} = colorFromRole(role);
+      const hex = hslToHex(h, s, l);
+      map[L] = { hex, text: textColorFor(hex) };
+      usedHues.push(h);
+    }
+  }
+  // 補充選項用的顏色:隨機挑距離其他色相夠遠的獨立色
+  for (const L of letters) {
+    if (!usedLetters.has(L)) {
+      const h = pickDistinctHue(usedHues, 30);
+      usedHues.push(h);
+      const hex = hslToHex(h, 55 + Math.random() * 25, 50 + Math.random() * 10);
+      map[L] = { hex, text: textColorFor(hex) };
+    }
+  }
+  return { letters, map };
+}
+
+function computeCellLayout(qi, palette) {
+  // 給每個題目算出:每個 palette 按鈕上要顯示哪個中文選項
+  const q = QUESTIONS[qi];
+  const ansIdx = LETTERS.indexOf(q.ans);
+  const correct = q.opts[ansIdx];
+  const distractors = q.opts.filter((_, i) => i !== ansIdx);
+  for (let i = distractors.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [distractors[i], distractors[j]] = [distractors[j], distractors[i]];
+  }
+  const layout = {};
+  layout[q.ans] = correct;
+  let k = 0;
+  for (const L of palette) {
+    if (L === q.ans) continue;
+    layout[L] = distractors[k++] || '(?)';
+  }
+  return layout;
+}
+
+function startPuzzle(idx) {
+  state.page = 'play';
+  state.puzzleIdx = idx;
+  const p = pickPalette(idx);
+  state.palette = p.letters;
+  state.paletteMap = p.map;
+  state.cellAnswers = pickQuestionsForPuzzle(idx);
+  // 同一題的所有格子共用同一組選項排列 + 同一個本地題號 (1-25)
+  const uniqueQis = Array.from(new Set(state.cellAnswers.filter(x => x !== null)));
+  const layoutByQi = {};
+  const qiToLocalNum = {};
+  uniqueQis.forEach((qi, i) => {
+    layoutByQi[qi] = computeCellLayout(qi, state.palette);
+    qiToLocalNum[qi] = i + 1;
+  });
+  state.qiToLocalNum = qiToLocalNum;
+  state.cellLayouts = state.cellAnswers.map(qi => qi === null ? null : layoutByQi[qi]);
+  state.cellChosen = state.cellAnswers.map(() => null);
+  state.currentCell = null;
+  state.checked = false;
+  state.showReward = false;
+  render();
+}
+
+function backToMenu() {
+  if (state.cellChosen.some(x => x !== null) && !confirm('離開這關進度不會存,確定嗎?')) return;
+  state.page = 'menu';
+  render();
+}
+
+function openCell(i) {
+  if (state.cellAnswers[i] === null) return; // 空白格不能點
+  state.currentCell = i;
+  render();
+}
+function answerCell(letter) {
+  const currentQi = state.cellAnswers[state.currentCell];
+  // 同一題號的所有格子一起染色
+  for (let i = 0; i < state.cellAnswers.length; i++) {
+    if (state.cellAnswers[i] === currentQi) {
+      state.cellChosen[i] = letter;
+    }
+  }
+  state.currentCell = null;
+  render();
+}
+function closeModal() { state.currentCell = null; render(); }
+
+function checkAnswers() {
+  state.checked = true;
+  const wrong = wrongCount();
+  if (wrong === 0) state.showReward = true;
+  render();
+  if (wrong > 0) {
+    setTimeout(() => alert(`檢查完成 · 錯 ${wrong} 題(標紅色 ✕)。點格子可以再改答案。`), 300);
+  }
+}
+function closeReward() { state.showReward = false; render(); }
+
+function resetChecked() { state.checked = false; render(); }
+
+function revealAnswers() {
+  // 開發/測試用:一鍵填上所有正解,直接看拼出的圖案
+  for (let i = 0; i < state.cellAnswers.length; i++) {
+    const qi = state.cellAnswers[i];
+    if (qi === null) continue;
+    state.cellChosen[i] = QUESTIONS[qi].ans;
+  }
+  state.checked = false;
+  render();
+}
+
+function wrongCount() {
+  // 以「題目」為單位算錯幾題(而不是每格)
+  const wrongQis = new Set();
+  for (let i = 0; i < state.cellAnswers.length; i++) {
+    const qi = state.cellAnswers[i];
+    if (qi === null) continue;
+    if (state.cellChosen[i] && state.cellChosen[i] !== QUESTIONS[qi].ans) wrongQis.add(qi);
+  }
+  return wrongQis.size;
+}
+
+function allFilled() {
+  for (let i = 0; i < state.cellAnswers.length; i++) {
+    if (state.cellAnswers[i] === null) continue;
+    if (state.cellChosen[i] === null) return false;
+  }
+  return true;
+}
+
+function activeCount() {
+  // 唯一題數(該關的題數,通常是 25)
+  return new Set(state.cellAnswers.filter(x => x !== null)).size;
+}
+function answeredCount() {
+  const answeredQis = new Set();
+  for (let i = 0; i < state.cellAnswers.length; i++) {
+    const qi = state.cellAnswers[i];
+    if (qi !== null && state.cellChosen[i]) answeredQis.add(qi);
+  }
+  return answeredQis.size;
+}
+
+// ============ 渲染 ============
+function render() {
+  document.getElementById('app').innerHTML = state.page === 'menu' ? renderMenu() : renderPlay();
+}
+
+function usedColorsInPuzzle(pzi) {
+  const set = new Set(PUZZLES[pzi].grid.join('').split(''));
+  set.delete('X');
+  return Array.from(set).sort();
+}
+
+function renderMenu() {
+  return `
+    <header class="text-center py-8 md:py-12">
+      <div class="text-6xl md:text-7xl mb-4">🎨</div>
+      <h1 class="display-font text-5xl md:text-6xl font-bold title-gradient mb-4 leading-tight">著色英文闖關</h1>
+      <p class="text-lg md:text-xl font-medium" style="color:var(--ink-soft)">選對單字 · 召喚出可愛圖案 ✨</p>
+      <p class="text-sm mt-3 opacity-70" style="color:var(--ink-soft)">國中程度英文 · 每關 6 色隨機配色 · 尺寸 10×10 到 15×15</p>
+    </header>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
+      ${PUZZLES.map((p, i) => {
+        const w = puzzleWidth(i), h = puzzleHeight(i);
+        return `
+          <button onclick="startPuzzle(${i})" class="puzzle-card">
+            <div class="badge mb-4">LEVEL ${String(i+1).padStart(2,'0')}</div>
+            <div class="display-font text-3xl font-bold mb-2" style="color:var(--ink)">?</div>
+            <div class="text-sm font-semibold" style="color:var(--ink-soft)">${w} × ${h}</div>
+          </button>
+        `;
+      }).join('')}
+    </div>
+    <footer class="text-center mt-12 pb-8 text-xs opacity-50" style="color:var(--ink)">
+      解謎完成才會揭曉每關的圖案 🔮
+    </footer>
+  `;
+}
+
+function renderPlay() {
+  const pz = PUZZLES[state.puzzleIdx];
+  const w = puzzleWidth(state.puzzleIdx);
+  const h = puzzleHeight(state.puzzleIdx);
+  const gridFlat = pz.grid.join('').split('');
+  const total = activeCount();
+  const answered = answeredCount();
+  const canCheck = allFilled();
+
+  // 依格數挑格子大小
+  const maxSide = Math.max(w, h);
+  const cellSizeClass = maxSide >= 9 ? 'w-11 h-11 text-sm' : maxSide >= 7 ? 'w-14 h-14' : 'w-16 h-16 text-lg';
+
+  const cellsHTML = gridFlat.map((letter, i) => {
+    if (letter === 'X') {
+      return `<div class="cell empty ${cellSizeClass} rounded"></div>`;
+    }
+    const qi = state.cellAnswers[i];
+    const chosen = state.cellChosen[i];
+    const correct = chosen && chosen === QUESTIONS[qi].ans;
+    let bg = '#ffffff';
+    let inner = String(state.qiToLocalNum[qi] || '?');
+
+    if (chosen) {
+      bg = state.paletteMap[chosen] ? state.paletteMap[chosen].hex : '#f3f4f6';
+      inner = '';
+      if (state.checked && !correct) {
+        inner = `<span class="x-mark">✕</span>`;
+      }
+    }
+    const isLight = chosen && state.paletteMap[chosen] && state.paletteMap[chosen].text === '#1f2937';
+    const border = chosen ? (isLight ? 'border border-gray-300' : '') : 'border-2 border-gray-300';
+    const cls = chosen ? 'filled' : '';
+    return `<div class="cell ${cls} ${cellSizeClass} rounded flex items-center justify-center font-bold text-gray-500 cursor-pointer ${border}"
+                 style="background:${bg}"
+                 onclick="openCell(${i})">${inner}</div>`;
+  }).join('');
+
+  let modalHTML = '';
+  if (state.currentCell !== null) {
+    const qi = state.cellAnswers[state.currentCell];
+    const q = QUESTIONS[qi];
+    modalHTML = `
+      <div class="fixed inset-0 flex items-center justify-center z-50 p-4 modal-backdrop" style="background:rgba(43,26,61,0.55);backdrop-filter:blur(4px)" onclick="if(event.target===this)closeModal()">
+        <div class="modal-panel bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl">
+          <div class="flex items-center justify-between mb-6">
+            <div class="text-xs font-bold uppercase tracking-widest opacity-50" style="color:var(--ink)">Q ${state.qiToLocalNum[qi] || '?'} / ${activeCount()}</div>
+            <button onclick="closeModal()" class="text-gray-400 hover:text-gray-700 text-2xl w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100">✕</button>
+          </div>
+          <div class="display-font text-5xl font-bold text-center mb-8" style="color:var(--ink)">${q.w}</div>
+          <div class="grid grid-cols-2 gap-3">
+            ${state.palette.map(L => {
+              const c = state.paletteMap[L];
+              const layout = state.cellLayouts[state.currentCell];
+              const opt = layout[L];
+              const isLight = c.text === '#1f2937';
+              const extraBorder = isLight ? 'border-2 border-gray-200' : 'border-2 border-transparent';
+              return `<button onclick="answerCell('${L}')" class="opt-btn rounded-2xl p-4 text-center ${extraBorder}"
+                style="background:${c.hex};color:${c.text}">
+                ${opt}
+              </button>`;
+            }).join('')}
+          </div>
+          <div class="text-xs text-center mt-6 opacity-50" style="color:var(--ink)">
+            選了哪個顏色 · 格子就變那個顏色 · 隨時可以回頭改
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  let bottomBar = '';
+  if (state.checked) {
+    const wc = wrongCount();
+    bottomBar = `
+      <div class="game-panel mt-5 flex items-center justify-between" style="padding:16px 24px">
+        <div class="display-font text-lg font-bold" style="color:${wc === 0 ? '#059669' : '#dc2626'}">
+          ${wc === 0 ? '🎉 全對!' : `答錯 ${wc} 題(標 ✕)`}
+        </div>
+        <button onclick="resetChecked()" class="btn-secondary">
+          繼續修改
+        </button>
+      </div>
+    `;
+  } else if (canCheck) {
+    bottomBar = `
+      <div class="game-panel mt-5 flex items-center justify-between" style="padding:16px 24px">
+        <div style="color:var(--ink-soft)">全部填完了,來檢查答案吧</div>
+        <button onclick="checkAnswers()" class="btn-primary">
+          ✓ 檢查答案
+        </button>
+      </div>
+    `;
+  }
+
+  // 完成獎勵 modal
+  let rewardHTML = '';
+  if (state.showReward) {
+    rewardHTML = `
+      <div class="fixed inset-0 flex items-center justify-center z-50 p-4 modal-backdrop" style="background:rgba(43,26,61,0.7);backdrop-filter:blur(6px)" onclick="closeReward()">
+        <div class="modal-panel rounded-3xl p-10 max-w-md w-full shadow-2xl text-center relative overflow-hidden"
+             style="background:linear-gradient(135deg,#fff8f0 0%,#ffe5f0 60%,#e0e7ff 100%)"
+             onclick="event.stopPropagation()">
+          <div class="absolute inset-0 confetti-burst pointer-events-none"></div>
+          <div class="relative">
+            <div class="text-xs font-bold uppercase tracking-widest mb-2" style="color:var(--accent2)">🎉 全部答對!</div>
+            <div class="text-sm mb-4" style="color:var(--ink-soft)">你拼出來的是</div>
+            <div class="reward-emoji" style="font-size:180px;line-height:1;margin:16px 0">${pz.emoji || '🎨'}</div>
+            <div class="display-font text-4xl font-bold mb-2 title-gradient">${pz.name}</div>
+            <div class="text-sm mb-6" style="color:var(--ink-soft)">跟你的色塊圖比對一下 ✨</div>
+            <button onclick="closeReward()" class="btn-primary w-full">
+              太棒了!回關卡看看
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <header class="flex items-center justify-between py-4 md:py-6">
+      <button onclick="backToMenu()" class="btn-secondary text-sm">← 回選單</button>
+      <h1 class="display-font text-2xl md:text-3xl font-bold" style="color:var(--ink)">
+        LEVEL ${String(state.puzzleIdx + 1).padStart(2,'0')}
+      </h1>
+      <div class="progress-pill">${answered}/${total}</div>
+    </header>
+
+    <div class="flex flex-col md:flex-row gap-5 items-start justify-center">
+      <div class="game-panel">
+        <div class="grid gap-1" style="grid-template-columns: repeat(${w}, minmax(0, 1fr));">${cellsHTML}</div>
+      </div>
+      <aside class="game-panel w-full md:w-64" style="padding:20px">
+        <div class="text-xs font-bold uppercase tracking-widest mb-3 opacity-60" style="color:var(--ink)">HOW TO PLAY</div>
+        <div class="text-sm leading-relaxed" style="color:var(--ink-soft)">
+          <p class="mb-2">🎯 點格子跳出題目</p>
+          <p class="mb-2">🎨 選選項後格子變顏色</p>
+          <p class="mb-2">↻ 隨時可以再點格子改答案</p>
+          <p>✓ 全部填完後檢查答案</p>
+        </div>
+        <hr class="my-4" style="border-color:rgba(107,91,122,0.15)">
+        <button onclick="revealAnswers()" class="text-xs w-full py-2 px-3 rounded-lg opacity-60 hover:opacity-100 transition"
+                style="background:rgba(124,92,255,0.08);color:var(--accent2);border:1px dashed rgba(124,92,255,0.3)">
+          🔧 顯示答案(測試用)
+        </button>
+      </aside>
+    </div>
+
+    ${bottomBar}
+    ${modalHTML}
+    ${rewardHTML}
+  `;
+}
+
+render();
+</script>
+</body>
+</html>
