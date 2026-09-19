@@ -165,7 +165,7 @@
 
 <script>
 // ============ 顏色 — 開新關卡時隨機生成 6 色配色 ============
-const LETTERS = ['A','B','C','D','E','F','G','H'];
+const LETTERS = ['A','B','C','D','E','F','G','H','I','J'];
 
 function hslToHex(h, s, l) {
   s /= 100; l /= 100;
@@ -212,7 +212,7 @@ function generateRandomPalette() {
 // ============ 關卡 (10×10 ~ 15×15; X = 空白格,不可點) ============
 // 每關 15×15 由 Gemini 設計
 const PUZZLES = [
-  // ---- 草莓 15×15 ----
+  // ---- 草莓 15x15 ----
   { name: '草莓', emoji: '🍓',
     colorRoles: { A:'red-body', B:'green-leaf', C:'yellow-seed', D:'white-highlight', E:'brown-stem', F:'black-bg' },
     grid: [
@@ -232,7 +232,7 @@ const PUZZLES = [
       'FFFFFFAAAFFFFFF',
       'FFFFFFFAFFFFFFF',
     ]},
-  // ---- 蘋果 15×15 ----
+  // ---- 蘋果 15x15 ----
   { name: '蘋果', emoji: '🍎',
     colorRoles: { A:'red-body', B:'green-leaf', D:'white-highlight', E:'brown-stem', F:'black-bg' },
     grid: [
@@ -252,7 +252,7 @@ const PUZZLES = [
       'FFFAAAAFAAAAFFF',
       'FFFFFAAFAAFFFFF',
     ]},
-  // ---- 企鵝 15×15 ----
+  // ---- 企鵝 15x15 ----
   { name: '企鵝', emoji: '🐧',
     colorRoles: { A:'blue-body', B:'white-belly', C:'red-hat', D:'orange-nose', F:'black-bg' },
     grid: [
@@ -272,9 +272,9 @@ const PUZZLES = [
       'FFFDDDFFFDDDFFF',
       'FFDDDFFFFFDDDFF',
     ]},
-  // ---- 披薩 15×15 ----
+  // ---- 披薩 15x15 ----
   { name: '披薩', emoji: '🍕',
-    colorRoles: { A:'yellow-cheese', B:'green-basil', C:'red-pepperoni', D:'brown-crust', E:'black-olive-detail', F:'black-bg' },
+    colorRoles: { A:'yellow-cheese', B:'red-tomato', C:'brown-crust', D:'green-basil', E:'orange-pepperoni', F:'black-bg' },
     grid: [
       'FFDDFFFFFFFFFFF',
       'FDDDDFFFFFFFFFF',
@@ -292,9 +292,9 @@ const PUZZLES = [
       'FDDDDFFFFFFFFFF',
       'FFDDFFFFFFFFFFF',
     ]},
-  // ---- 冰淇淋 15×15 ----
+  // ---- 冰淇淋 15x15 ----
   { name: '冰淇淋', emoji: '🍦',
-    colorRoles: { A:'brown-detail', B:'red-cherry', C:'pink-strawberry-scoop', D:'white-highlight', E:'mint-scoop', F:'yellow-cone', G:'black-bg' },
+    colorRoles: { A:'pink-scoop', B:'brown-cone', C:'white-highlight', D:'red-cherry', E:'green-mint', F:'purple-scoop', G:'black-bg' },
     grid: [
       'GGGGGGGGAGGGGGG',
       'GGGGGGBBAGGGGGG',
@@ -312,9 +312,9 @@ const PUZZLES = [
       'GGGGGGFFGGGGGGG',
       'GGGGGGGFGGGGGGG',
     ]},
-  // ---- 紅毒菇 15×15 ----
+  // ---- 紅毒菇 15x15 ----
   { name: '紅毒菇', emoji: '🍄',
-    colorRoles: { A:'red-cap', B:'white-spot', C:'yellow-stem', F:'black-bg' },
+    colorRoles: { A:'red-cap', B:'white-spot', C:'cream-stem', F:'grass-bg' },
     grid: [
       'FFFFFAAAAAFFFFF',
       'FFFAAAAAAAAAFFF',
@@ -332,9 +332,9 @@ const PUZZLES = [
       'FFFCCCCCCCCCFFF',
       'FFFFCCCCCCCFFFF',
     ]},
-  // ---- 愛心 15×15 ----
+  // ---- 愛心 15x15 ----
   { name: '愛心', emoji: '❤️',
-    colorRoles: { A:'yellow-body', B:'brown-outline', C:'black-bg' },
+    colorRoles: { A:'red-body', B:'pink-highlight', C:'black-bg' },
     grid: [
       'CCCCCCCCCCCCCCC',
       'CCBBCCCCCCCBBCC',
@@ -352,29 +352,29 @@ const PUZZLES = [
       'CCCCCCCBCCCCCCC',
       'CCCCCCCCCCCCCCC',
     ]},
-  // ---- 星星 15×15 ----
+  // ---- 星星 15x15 ----
   { name: '星星', emoji: '⭐',
-    colorRoles: { A:'yellow-body', B:'black-outline', C:'night-sky-bg' },
+    colorRoles: { A:'yellow-star', B:'gold-shadow', C:'night-sky-bg' },
     grid: [
       'CCCCCCCBCCCCCCC',
       'CCCCCCBABCCCCCC',
       'CCCCCBAAABCCCCC',
       'BBBBBBAAABBBBBB',
+      'BAAAAAAAAAAAAAB',
       'CBAAAAAAAAAAABC',
       'CCBAAAAAAAAABCC',
       'CCCBAAAAAAABCCC',
-      'CCCBAAAAAAABCCC',
       'CCBAAAAAAAAABCC',
-      'CBAAAAAAAAAAABC',
-      'BAAABBAAABBAAAB',
-      'BAABCCBABCCBAAB',
-      'BABCCCCBCCCCBAB',
+      'CBAAABBBBBAAABC',
+      'BAAABCCCCCBAAAB',
+      'BAABCCCCCCCBAAB',
+      'BABCCCCCCCCCBAB',
       'BBCCCCCCCCCCCBB',
       'CCCCCCCCCCCCCCC',
     ]},
-  // ---- 鑰匙 15×15 ----
+  // ---- 鑰匙 15x15 ----
   { name: '鑰匙', emoji: '🔑',
-    colorRoles: { A:'yellow-body', B:'black-outline', C:'night-sky-bg' },
+    colorRoles: { A:'gold-body', B:'yellow-highlight', C:'night-sky-bg' },
     grid: [
       'CCCCBBBBBBCCCCC',
       'CCCBAAAAAABCCCC',
@@ -392,49 +392,49 @@ const PUZZLES = [
       'CCCCCBAABCCCCCC',
       'CCCCCCBBCCCCCCC',
     ]},
-  // ---- 幸運草 15×15 ----
+  // ---- 幸運草 15x15 ----
   { name: '幸運草', emoji: '🍀',
-    colorRoles: { A:'green-leaf', B:'night-sky-bg' },
+    colorRoles: { A:'green-leaf', B:'lime-highlight', C:'night-sky-bg' },
     grid: [
-      'BBBBBAABAABBBBB',
-      'BBBBAAAAAAABBBB',
-      'BBBBAAAAAAABBBB',
-      'BBBBBAAAAABBBBB',
-      'AABBBBAAABBBBAA',
-      'AAAAAAAAAAAAAAA',
-      'BAAAAAAAAAAAAAB',
-      'AAAAAAAAAAAAAAA',
-      'AAAAAAAAAAAAAAA',
-      'BAAABBAAABBAAAB',
-      'BBBBBAAAAABBBBB',
-      'BBBBAAAAAAABBBB',
-      'BBBBAAAAAAABBBB',
-      'BBBBBAABAAAABBB',
-      'BBBBBBBBBBBAABB',
-    ]},
-  // ---- 櫻花 15×15 ----
-  { name: '櫻花', emoji: '🌸',
-    colorRoles: { A:'pink-petal', B:'yellow-stamen', C:'night-sky-bg' },
-    grid: [
-      'CCCCCACCCACCCCC',
-      'CCCCAAACAAACCCC',
-      'CCCCAAAAAAACCCC',
-      'AACCCAAAAACCCAA',
-      'AAAACCAAACCAAAA',
-      'CAAAAAAAAAAAAAC',
-      'CCAAAABBBAAAACC',
+      'CAACCCCCCCCCAAC',
+      'AAAACCCCCCCAAAA',
+      'AAAAACCCCCAAAAA',
+      'CAAAAACCCAAAAAC',
+      'CCAAAAACAAAAACC',
       'CCCAAABBBAAACCC',
-      'CCAAAABBBAAAACC',
-      'CAAAAAAAAAAAAAC',
-      'AAAACCAAACCAAAA',
-      'AAACCAAAAACCAAA',
-      'CACCAAACAAACCAC',
-      'CCCCAACCCAACCCC',
-      'CCCCCCCCCCCCCCC',
+      'CCCCABBBBBACCCC',
+      'CCCCCBBBBBCCCCC',
+      'CCCCABBBBBACCCC',
+      'CCCAAABBBAAACCC',
+      'CCAAAAABAAAAACC',
+      'CAAAAACBCAAAAAC',
+      'AAAAACCBCCAAAAA',
+      'AAAACCCBBCCAAAA',
+      'CAACCCCCBBCCAAC',
     ]},
-  // ---- 寶藏箱 15×15 ----
+  // ---- 櫻花 15x15 ----
+  { name: '櫻花', emoji: '🌸',
+    colorRoles: { A:'pink-petal', B:'white-highlight', C:'yellow-center', D:'night-sky-bg' },
+    grid: [
+      'DDDDDAADAADDDDD',
+      'DDDDAAAAAAADDDD',
+      'DDDDAAAAAAADDDD',
+      'AADDDAAAAADDDAA',
+      'AAAADDAAADDAAAA',
+      'DAAAAABBBAAAAAD',
+      'DDAAABBCBBAAADD',
+      'DDDAABCCCBAADDD',
+      'DDAAABBCBBAAADD',
+      'DAAAAABBBAAAAAD',
+      'AAAADDAAADDAAAA',
+      'AAADDAAAAADDAAA',
+      'DAADAAADAAADAAD',
+      'DDADAADDDAADADD',
+      'DDDDDDDDDDDDDDD',
+    ]},
+  // ---- 寶藏箱 15x15 ----
   { name: '寶藏箱', emoji: '🪙',
-    colorRoles: { A:'wood-light', B:'brown-dark-outline', C:'yellow-gold', D:'night-sky-bg' },
+    colorRoles: { A:'brown-wood', B:'gold-band', C:'yellow-coin', D:'night-sky-bg' },
     grid: [
       'DDDDDDDDDDDDDDD',
       'DDDBBBBBBBBBDDD',
@@ -451,6 +451,594 @@ const PUZZLES = [
       'DBBBBBBBBBBBBBD',
       'DDDDDDDDDDDDDDD',
       'DDDDDDDDDDDDDDD',
+    ]},
+  // ---- 柴犬 16x16 ----
+  { name: '柴犬', emoji: '🐕',
+    colorRoles: { A:'orange-fur', B:'cream-belly', C:'black-nose-eye', D:'pink-tongue', E:'cream-bg' },
+    grid: [
+      'EEAAEEEEEEEEAAEE',
+      'EADDAEEEEEEADDAE',
+      'AADDAAAAAAAADDAA',
+      'AADDAAAAAAAADDAA',
+      'AAAAAAAAAAAAAAAA',
+      'AAAABBAAAABBAAAA',
+      'AAAABBAAAABBAAAA',
+      'AAACCAAAAACCAAAA',
+      'AAACCABBBBACCAAA',
+      'AABBBBBCCBBBBBAA',
+      'AABBBBBCCBBBBBAA',
+      'AABBBBBBBBBBBBAA',
+      'EAABBBBBBBBBBAAE',
+      'EEAABBBBBBBBAAEE',
+      'EEEAAAAAAAAAAEEE',
+      'EEEEEEEEEEEEEEEE',
+    ]},
+  // ---- 水豚 16x16 ----
+  { name: '水豚', emoji: '🦫',
+    colorRoles: { A:'brown-fur', B:'pink-nose', C:'black-eye', D:'cream-highlight', F:'grass-bg' },
+    grid: [
+      'FFFFFFFDFFFFFFFF',
+      'FFFFFFEEEFFFFFFF',
+      'FFFFFFEEEFFFFFFF',
+      'FFAAFAAAAAAFAAFF',
+      'FACAAAAAAAAAACAF',
+      'FAAAAAAAAAAAAAAF',
+      'FAAAAAAAAAAAAAAF',
+      'FAACCAAAAACCAAAF',
+      'FAAAABBBBBBAAAAF',
+      'FAAABBBBBBBBAAAF',
+      'FAABBBCCCBBBBAAF',
+      'FAABBBBCBBBBBAAF',
+      'FAABBBCCCBBBBAAF',
+      'FAAABBBBBBBBAAAF',
+      'FFAAAAAAAAAAAAFF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 狐狸 16x16 ----
+  { name: '狐狸', emoji: '🦊',
+    colorRoles: { A:'orange-fur', B:'white-belly', C:'black-nose', E:'cream-bg' },
+    grid: [
+      'EBBEEEEEEEEEBBEE',
+      'BAABEEEEEEEBAABE',
+      'BACABEEEEEBACABE',
+      'BACCABEEEBACCABE',
+      'EBACCAAAAACCABEE',
+      'EEBAAAAAAAAABEEE',
+      'EEAAAAAAAAAAAEEE',
+      'EAAAAAAAAAAAAAEE',
+      'AAABBAAAAABBAAAE',
+      'AAABBAAAAABBAAAE',
+      'ADDAAAAAAAAADDAE',
+      'EDDDDAABAADDDDEE',
+      'EEDDDDBBBDDDDEEE',
+      'EEEDDDDBDDDDEEEE',
+      'EEEEDDDDDDDEEEEE',
+      'EEEEEEEEEEEEEEEE',
+    ]},
+  // ---- 乳牛 16x16 ----
+  { name: '乳牛', emoji: '🐄',
+    colorRoles: { A:'white-body', B:'black-spot', C:'pink-udder', F:'grass-bg' },
+    grid: [
+      'FFCCFFFFFFFFCCFF',
+      'FACCFFFFFFFFCCBF',
+      'AAAFAAABBBBFBBBF',
+      'AAFAAAAABBBBFBBF',
+      'FFAAAAAABBBBBFFF',
+      'FAAAAAAABBBBBBFF',
+      'FAAAAAABBBBBBBFF',
+      'FAAAAAABBBAABBFF',
+      'FBAAAABBBBAABBFF',
+      'FBBBBBBBBBBBBBFF',
+      'FDDDDDDDDDDDDDFF',
+      'DDDDDEDDDEDDDDDF',
+      'DDDDDEDDDEDDDDDF',
+      'DDDDDDDDDDDDDDDF',
+      'FDDDDDDDDDDDDDFF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 恐龍 16x16 ----
+  { name: '恐龍', emoji: '🦖',
+    colorRoles: { A:'green-body', B:'lime-belly', C:'black-eye', F:'cream-bg' },
+    grid: [
+      'FFFAAAAFFFFFFFFF',
+      'FFAAAAAABFFFFFFF',
+      'FAACDAAABBFFFFFF',
+      'FAACCAAAAFFFFFFF',
+      'FACAAAAAABBFFFFF',
+      'FAAAAAAAAABFFFFF',
+      'FFAAAAAAAAFFFFFF',
+      'FFAAAAAAAAABBFFF',
+      'FFAAAAAAAAAABFFF',
+      'FFAAEEAAAAAAAFFF',
+      'FFAAAEEAAAAAFFFF',
+      'FFFAAAEEAAAFFFFF',
+      'FFFAAAAAAAFFFFFF',
+      'FFFAAFFAAAFFFFFF',
+      'FFAAAFAAAAFFFFFF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 鳳梨 16x16 ----
+  { name: '鳳梨', emoji: '🍍',
+    colorRoles: { A:'yellow-body', B:'brown-scale', C:'green-leaf', E:'night-sky-bg' },
+    grid: [
+      'EEECDECDCEDCEEEE',
+      'EECCDECDCEDCCEEE',
+      'EEECDCCDCCDCEEEE',
+      'EEEECDCDCDCEEEEE',
+      'EEEEECDCDCEEEEEE',
+      'EEEAAAAAAAAAEEEE',
+      'EEAABAABAABAAEEE',
+      'EAABAABAABAABAEE',
+      'EABAABAABAABAAEE',
+      'EAAABAABAABAAAEE',
+      'EAABAABAABAABAEE',
+      'EABAABAABAABAAEE',
+      'EEAABAABAABAAEEE',
+      'EEAAAAAAAAAAAEEE',
+      'EEEAAAAAAAAAEEEE',
+      'EEEEEEEEEEEEEEEE',
+    ]},
+  // ---- 甜甜圈 16x16 ----
+  { name: '甜甜圈', emoji: '🍩',
+    colorRoles: { A:'brown-chocolate', B:'pink-sprinkle', C:'yellow-sprinkle', D:'green-sprinkle', E:'cream-bread', F:'night-sky-bg' },
+    grid: [
+      'FFFFFFFFFFFFFFFF',
+      'FFFFAAAAAAAFFFFF',
+      'FFAAAACAABAAAFFF',
+      'FAABAAAAAADAAAFF',
+      'FAAAAAAAAAAACAFF',
+      'AADAAFFFFFAAAAAF',
+      'AAAAFFFFFFFABAAF',
+      'ACAAFFFFFFFAAAAF',
+      'AAAAFFFFFFFAADAF',
+      'AAAAAFFFFFAAAAAF',
+      'FABAAAAAAAACAAFF',
+      'FAAAEEEEEEEAAEFF',
+      'FFEEEEEEEEEEEFFF',
+      'FFFEEEEEEEEEFFFF',
+      'FFFFEEEEEEEFFFFF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 火箭 16x16 ----
+  { name: '火箭', emoji: '🚀',
+    colorRoles: { A:'red-body', B:'white-nose', C:'blue-window', D:'orange-flame', E:'yellow-flame', F:'night-sky-bg' },
+    grid: [
+      'FFFFFFFAAFFFFFFF',
+      'FFFFFFAAAAFFFFFF',
+      'FFFFFAAAAAAFFFFF',
+      'FFFFFBBBBBBFFFFF',
+      'FFFFFBBCCBBFFFFF',
+      'FFFFFBCBCCBFFFFF',
+      'FFFFFBCCCCBFFFFF',
+      'FFFFFBBCCBBFFFFF',
+      'FFFFFBBBBBBFFFFF',
+      'FFFAFBBBBBBFAFFF',
+      'FFAAFBBBBBBFAAFF',
+      'FAAAFAAAAAAFAAAF',
+      'FAAAFFDDDDFFAAAF',
+      'FFFFFFDEEDFFFFFF',
+      'FFFFFFFEEFFFFFFF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 相機 16x16 ----
+  { name: '相機', emoji: '📷',
+    colorRoles: { A:'silver-body', B:'white-highlight', C:'black-lens', D:'blue-lens-glass', F:'yellow-bg' },
+    grid: [
+      'FFFFFFFFFFFFFFFF',
+      'FFAAFFFFFFFAAFFF',
+      'FAAAAAAAAAAAAAFF',
+      'FABAAAAAAAAAAAFF',
+      'FCCCCAAAAACCCCFF',
+      'FCCCADDDDACCCCFF',
+      'FCCADBDDDDACCCFF',
+      'FCCADDDDDDACCCFF',
+      'FCCADDDDDDACCCFF',
+      'FCCCADDDDACCCCFF',
+      'FCCCCAAAAACCCCFF',
+      'FCCCCCCCCCCCCCFF',
+      'FCCCCCCCCCCCCCFF',
+      'FFFFFFFFFFFFFFFF',
+      'FFFFFFFFFFFFFFFF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 鯨魚 16x16 ----
+  { name: '鯨魚', emoji: '🐳',
+    colorRoles: { A:'black-body', B:'white-belly', F:'blue-water-bg' },
+    grid: [
+      'FFFFFFFFFFFFFFFF',
+      'FFFFFFAFFFFFFFFF',
+      'FFFFFAAFFFFFFFFF',
+      'FFFFAAAFFFFFFFFF',
+      'FFAAAAAAFFFFFFFF',
+      'FAAAAAAAAFFFFFFF',
+      'AAAAAAAAAAFFFFAF',
+      'AABBAAAAAAAFFAAF',
+      'AABBAAAAAAAAAAFF',
+      'AAAAAAAAAAAAAFFF',
+      'FBBBBBBAAAAFFAAF',
+      'FFBBBBBBAAFFFFAF',
+      'FFFBBBBFFFFFFFFF',
+      'FFFFFFFFFFFFFFFF',
+      'FFFFFFFFFFFFFFFF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 西瓜切片 16x16 ----
+  { name: '西瓜切片', emoji: '🍉',
+    colorRoles: { A:'red-fruit', B:'black-seed', C:'white-rind', D:'green-skin', F:'night-sky-bg' },
+    grid: [
+      'FFFFFFFAAFFFFFFF',
+      'FFFFFFAAAAFFFFFF',
+      'FFFFFAAAAAAFFFFF',
+      'FFFFAAABAAAAFFFF',
+      'FFFAAAAAABAAAFFF',
+      'FFAAABAAAAAAAAFF',
+      'FAAAAAAABAAAAAAF',
+      'FAABAAAAAAABAAAF',
+      'AAAAAABAAAAAAAAA',
+      'AAAAAAAAABAAAAAA',
+      'CCCCCCCCCCCCCCCC',
+      'DDDDDDDDDDDDDDDD',
+      'FDDDDDDDDDDDDDDF',
+      'FFFFFFFFFFFFFFFF',
+      'FFFFFFFFFFFFFFFF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 鬧鐘 16x16 ----
+  { name: '鬧鐘', emoji: '⏰',
+    colorRoles: { A:'red-frame', B:'silver-bell', C:'white-face', D:'black-hand', F:'night-sky-bg' },
+    grid: [
+      'FAAFFFBBBBFFFAAF',
+      'AAAAFFBFFBFFAAAA',
+      'FAAFBAAAAAABFAAF',
+      'FFFAAAAAAAAAAFFF',
+      'FFAACCCDDCCCAAFF',
+      'FAACCCCCCCCCCAAF',
+      'FACCDDCCCCCCCCAF',
+      'FACCCDDCCCCCDCAF',
+      'FADCCCDDDDDCDCAF',
+      'FACCCCCDDCCCCCAF',
+      'FAACCCCCCCCCCAAF',
+      'FFAACCCDDCCCAAFF',
+      'FFFAAAAAAAAAAFFF',
+      'FFDDFFFFFFFFDDFF',
+      'FDDFFFFFFFFFFDDF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 熱氣球 16x16 ----
+  { name: '熱氣球', emoji: '🎈',
+    colorRoles: { A:'red-stripe', B:'white-stripe', C:'blue-stripe', D:'brown-basket', F:'night-sky-bg' },
+    grid: [
+      'FFFFFAABBCCFFFFF',
+      'FFFAAAABBCCCCFFF',
+      'FFAAAAABBCCCCCFF',
+      'FAAAAAABBCCCCCCF',
+      'FAAAAAABBCCCCCCF',
+      'FAAAAAABBCCCCCCF',
+      'FFAAAAABBCCCCCFF',
+      'FFFAAAABBCCCCFFF',
+      'FFFFAAABBCCCFFFF',
+      'FFFFFAABBCCFFFFF',
+      'FFFFFDDDDDDFFFFF',
+      'FFFFFDFFFFDFFFFF',
+      'FFFFFDDDDDDFFFFF',
+      'FFFFFDDDDDDFFFFF',
+      'FFFFFFDDDDFFFFFF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 鑽石 16x16 ----
+  { name: '鑽石', emoji: '💎',
+    colorRoles: { A:'sky-blue-facet', B:'white-highlight', C:'blue-facet', D:'deep-blue-shadow', F:'night-sky-bg' },
+    grid: [
+      'FFFFFFFFFFFFFFFF',
+      'FFFFAAAAAAAAFFFF',
+      'FFFABBAAAACCAFFF',
+      'FFABBBAAAACCCAFF',
+      'FAABBBAAAACCCCAF',
+      'AAAAAAAAAAAAAAAA',
+      'ABBAACCCCCCDDDAA',
+      'FABAACCCCCCDDAFF',
+      'FAAAACCCCCCDDAFF',
+      'FFAAACCCCCCDAFFF',
+      'FFFAACCCCCCAFFFF',
+      'FFFFAACCCCAFFFFF',
+      'FFFFFAACCAFFFFFF',
+      'FFFFFFAAAFFFFFFF',
+      'FFFFFFFAFFFFFFFF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 幽靈 16x16 ----
+  { name: '幽靈', emoji: '👻',
+    colorRoles: { A:'white-body', B:'black-eye', C:'pink-cheek', F:'night-sky-bg' },
+    grid: [
+      'FFFFFFFFFFFFFFFF',
+      'FFFFAAAAAAAAFFFF',
+      'FFFAAAAAAAAAAFFF',
+      'FFAAAAAAAAAAAAFF',
+      'FFAAAAAAAAAAAAFF',
+      'FFAABBAAAABBAAFF',
+      'FFAABBAAAABBAAFF',
+      'FAAAAAAAAAAAAAAF',
+      'AAACCAAAAACCAAAA',
+      'AAACCAAAAACCAAAA',
+      'FAAAAAAAAAAAAAAF',
+      'FFAAAAAAAAAAAAFF',
+      'FFAAAAAAAAAAAAFF',
+      'FFAAFAAFFAAFAAFF',
+      'FFAFFFAFFAFFFAFF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 魔法藥水 16x16 ----
+  { name: '魔法藥水', emoji: '🧪',
+    colorRoles: { A:'brown-cork', B:'silver-neck', C:'white-highlight', D:'red-potion', F:'night-sky-bg' },
+    grid: [
+      'FFFFFFAAAAFFFFFF',
+      'FFFFFFAAAAFFFFFF',
+      'FFFFFBBBBBBFFFFF',
+      'FFFFFBCFFBBFFFFF',
+      'FFFFBBCFFFBBFFFF',
+      'FFBBBCCFFFFBBBFF',
+      'FBBCCCDDDDDDBBFF',
+      'FBCCDDDDDDDDDBFF',
+      'BBCDDDDDCDDDDBBF',
+      'BCCDDDDDCDDDDDBF',
+      'BCDDDDDDDDDDDDBF',
+      'BBDDDDDDDDDDDBBF',
+      'FBBDDDDDDDDDBBFF',
+      'FFBBBBBBBBBBBFFF',
+      'FFFFFFFFFFFFFFFF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 珍珠奶茶 16x16 ----
+  { name: '珍珠奶茶', emoji: '🧋',
+    colorRoles: { A:'red-straw', B:'white-cup', C:'cream-tea', D:'black-pearl', F:'night-sky-bg' },
+    grid: [
+      'FFFFFFFFFFFAAFFF',
+      'FFFFFFFFFAAFFFFF',
+      'FFFFFFFFAAFFFFFF',
+      'FFBBBBBBBBBBBFFF',
+      'FFBCCCCCCCCCBFFF',
+      'FFBCCCCCCCCCBFFF',
+      'FFBCCCCCCCCCBFFF',
+      'FFBCCCCCCCCCBFFF',
+      'FFBCCCCCCCCCBFFF',
+      'FFBCDDCCDDCCBFFF',
+      'FFBCDDCCDDCCBFFF',
+      'FFBDDCDDCDDCBFFF',
+      'FFBDDCDDCDDCBFFF',
+      'FFFBBDDDDBBFFFFF',
+      'FFFFBBBBBBFFFFFF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 薯條 16x16 ----
+  { name: '薯條', emoji: '🍟',
+    colorRoles: { A:'yellow-fry', B:'red-carton', C:'orange-carton-edge', D:'white-logo', F:'night-sky-bg' },
+    grid: [
+      'FFFFFFFAAFFFFFFF',
+      'FFFAAFAAAAFAAFFF',
+      'FFAAAFAAAAAAAFFF',
+      'FAAAAAAAAAAAAAFF',
+      'FAAAAAAAAAAAAAFF',
+      'FBCCCCCCCCCCCBFF',
+      'FBBBBBBBBBBBBBFF',
+      'FBBBBAAAAABBBBFF',
+      'FBBBAAAAAAABBBFF',
+      'FBBBAADDAAABBBFF',
+      'FFBBAAAAAAABBFFF',
+      'FFBBBAAAAABBBFFF',
+      'FFBBBBBBBBBBBFFF',
+      'FFFBBBBBBBBBFFFF',
+      'FFFFBBBBBBBFFFFF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 漢堡 16x16 ----
+  { name: '漢堡', emoji: '🍔',
+    colorRoles: { A:'cream-bun', B:'white-sesame', C:'green-lettuce', D:'red-tomato', E:'brown-patty', F:'night-sky-bg' },
+    grid: [
+      'FFFFFFFFFFFFFFFF',
+      'FFFFAAAAAAAAFFFF',
+      'FFAAAABAAABAAAFF',
+      'FAAAAAAAAAAAAAAF',
+      'FAAAAAAAAAAAAAAF',
+      'FCCCCCCCCCCCCCCF',
+      'FCFCCCFCCFCCFCCF',
+      'FDDDDDDDDDDDDDDF',
+      'FEEEEEEEEEEEEEEF',
+      'FEEEEEEEEEEEEEEF',
+      'FAAAAAAAAAAAAAAF',
+      'FFAAAAAAAAAAAAFF',
+      'FFFFFFFFFFFFFFFF',
+      'FFFFFFFFFFFFFFFF',
+      'FFFFFFFFFFFFFFFF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 外星人 16x16 ----
+  { name: '外星人', emoji: '👽',
+    colorRoles: { A:'green-body', B:'black-eye', F:'night-sky-bg' },
+    grid: [
+      'FFAFFFFFFFFFFAFF',
+      'FFFAFFFFFFFFAFFF',
+      'FFAAAAAAAAAAAAFF',
+      'FAAAAAAAAAAAAAAF',
+      'AAAAAAAAAAAAAAAA',
+      'AABBAAAAAAABBAAA',
+      'AABBBAAAAABBBAAA',
+      'AAABBAAAAABBAAAA',
+      'FAAAAAAAAAAAAAAF',
+      'FFAAAAAAAAAAAAFF',
+      'FFFAAAAAAAAAFFFF',
+      'FAAAAAAAAAAAAAFF',
+      'FAFAAAAAAAAAFAFF',
+      'FFFAAAFFAAAFFFFF',
+      'FFFAAFFFFAAFFFFF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 小鴨 16x16 ----
+  { name: '小鴨', emoji: '🐤',
+    colorRoles: { A:'yellow-body', B:'white-eye', C:'black-pupil', D:'orange-beak', F:'night-sky-bg' },
+    grid: [
+      'FFFFFFFFFFFFFFFF',
+      'FFFAAAAAFFFFFFFF',
+      'FFAAAAAAAFFFFFFF',
+      'FFABCAAAAFFFFFFF',
+      'DDACCAAAAFFFFFFF',
+      'DDDAAAAAFFFFFFFF',
+      'FDDAAAAAAFFFFFFF',
+      'FFAAAAAAAAAFFAFF',
+      'FAAAAAAAAAAAAAFF',
+      'AAAAAAAAAAAAAAAF',
+      'AAAAAAAAAAAAAAAF',
+      'AAAAAAAAAAAAAAFF',
+      'FAAAAAAAAAAAAFFF',
+      'FFAAAAAAAAAAFFFF',
+      'FFFAAAAAAAFFFFFF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 杯子蛋糕 16x16 ----
+  { name: '杯子蛋糕', emoji: '🧁',
+    colorRoles: { A:'brown-stick', B:'red-cherry', C:'pink-icing', D:'yellow-cup', E:'orange-stripe', F:'night-sky-bg' },
+    grid: [
+      'FFFFFFFFAAFFFFFF',
+      'FFFFFFFAAFFFFFFF',
+      'FFFFFFBBBFFFFFFF',
+      'FFFFFBBBBBFFFFFF',
+      'FFFFCCCCCCCFFFFF',
+      'FFCCCCCCCCCCCFFF',
+      'FCCCCCCCCCCCCCFF',
+      'FCCCCCCCCCCCCCFF',
+      'FCCCCCCCCCCCCCFF',
+      'FFDDEDDEDDEDDFFF',
+      'FFDDEDDEDDEDDFFF',
+      'FFDDEDDEDDEDDFFF',
+      'FFFDEDDEDDEDFFFF',
+      'FFFDEDDEDDEDFFFF',
+      'FFFFDDDDDDDFFFFF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 草莓甜甜圈 16x16 ----
+  { name: '草莓甜甜圈', emoji: '🍩',
+    colorRoles: { A:'cream-ring', B:'pink-icing', C:'white-sprinkle', D:'blue-sprinkle', F:'night-sky-bg' },
+    grid: [
+      'FFFFFFFFFFFFFFFF',
+      'FFFFAAAAAAAAFFFF',
+      'FFABBBBBBBBBAAFF',
+      'FABBCBBDDBBBBAFF',
+      'FABBBBBBBBCBBAFF',
+      'ABBDDFFFFFBBBBAF',
+      'ABBBFFFFFFFBBBAF',
+      'ABBBFFFFFFFBBBAF',
+      'ABBBFFFFFFFBBBAF',
+      'ABBBBFFFFFBBBBAF',
+      'FABBBBBBBBBBAAFF',
+      'FAABBAABBAAAAAFF',
+      'FFAAAAAAAAAAAFFF',
+      'FFFAAAAAAAAAFFFF',
+      'FFFFFFFFFFFFFFFF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 西瓜冰棒 16x16 ----
+  { name: '西瓜冰棒', emoji: '🍉',
+    colorRoles: { A:'red-fruit', B:'black-seed', C:'white-rind', D:'green-skin', E:'brown-stick', F:'night-sky-bg' },
+    grid: [
+      'FFFFFFFFFFFFFFFF',
+      'FFFFAAAAAAAAFFFF',
+      'FFFAAAAAAAAAAFFF',
+      'FFFAABAAABAAAFFF',
+      'FFFAABAAABAAAFFF',
+      'FFFAAAAAAAAAAFFF',
+      'FFFAAABBAAAAAFFF',
+      'FFFAAABBAAAAAFFF',
+      'FFFAAAAAAAAAAFFF',
+      'FFFCCCCCCCCCCFFF',
+      'FFFDDDDDDDDDDFFF',
+      'FFFDDDDDDDDDDFFF',
+      'FFFFFFEEEEFFFFFF',
+      'FFFFFFEEEEFFFFFF',
+      'FFFFFFEEEEFFFFFF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 向日葵 16x16 ----
+  { name: '向日葵', emoji: '🌻',
+    colorRoles: { A:'yellow-petal', B:'orange-inner', C:'brown-center', D:'green-stem', F:'night-sky-bg' },
+    grid: [
+      'FFFFFFAAAAFFFFFF',
+      'FFAAFAAAAAAFAAFF',
+      'FAAAAABBBBAAAAAF',
+      'FAAABBBCCBBBAAAF',
+      'FFABBCCCCCCBBAFF',
+      'FAABCCCCCCCCBAAF',
+      'AAABCCCCCCCCBAAA',
+      'AAABCCCCCCCCBAAA',
+      'FAABCCCCCCCCBAAF',
+      'FFABBCCCCCCBBAFF',
+      'FAAABBBCCBBBAAAF',
+      'FAAAAABBBBAAAAAF',
+      'FFAAFAADDAAFAAFF',
+      'FFFFFFFDDDDDFFFF',
+      'FFFFFFFDDDDDDFFF',
+      'FFFFFFFDDFFFFFFF',
+    ]},
+  // ---- 雙層巴士 16x16 ----
+  { name: '雙層巴士', emoji: '🚌',
+    colorRoles: { A:'red-body', B:'yellow-light', C:'blue-window', D:'white-highlight', E:'black-wheel', F:'night-sky-bg' },
+    grid: [
+      'FFFFFFFFFFFFFFFF',
+      'FFAAAAAAAAAAAFFF',
+      'FBBACDCACDCAAAFF',
+      'FBBACCCACCCAAAFF',
+      'FAAAAAAAAAAAAAFF',
+      'FAAAAAAAAAAAAAFF',
+      'FCDACDCACDCAAAFF',
+      'FCCACCCACCCAAAFF',
+      'FAAAAAAAAAAAAAFF',
+      'FAAAAAAAAAAAAAFF',
+      'FEEEEEEEEEEEEEFF',
+      'FFEEEFFFFEEEFFFF',
+      'FFEDEFFFFEDEFFFF',
+      'FFEEEFFFFEEEFFFF',
+      'FFFFFFFFFFFFFFFF',
+      'FFFFFFFFFFFFFFFF',
+    ]},
+  // ---- 金剛鸚鵡 16x16 ----
+  { name: '金剛鸚鵡', emoji: '🦜',
+    colorRoles: { A:'sky-blue-bg', B:'black-wing', C:'white-face', D:'yellow-body', E:'brown-perch', F:'night-sky-bg', G:'red-tail' },
+    grid: [
+      'FFFFFAAAFFFFFFFF',
+      'FFFAAAAAAFFFFFFF',
+      'FFBCCBAAAAFFFFFF',
+      'FBBCCCAAAAFFFFFF',
+      'FFBDDDAAAAFFFFFF',
+      'FFDDDDDAAAAFFFFF',
+      'FFDDDDDAAAAFFFFF',
+      'FFDDDDDAAAAFFFFF',
+      'FFDDDDDAAAAFFFFF',
+      'FFFDDDDAAAAFFFFF',
+      'FFFFBBFAAAAFFFFF',
+      'EEEEEEEEEEEEEEEE',
+      'FFFFFFFGGGFFFFFF',
+      'FFFFFFFGGGFFFFFF',
+      'FFFFFFFGGFFFFFFF',
+      'FFFFFFFGFFFFFFFF',
+    ]},
+  // ---- 大嘴鳥 16x16 ----
+  { name: '大嘴鳥', emoji: '🐦',
+    colorRoles: { A:'black-body', B:'yellow-beak', C:'orange-beak-edge', D:'blue-eye', E:'white-belly', F:'night-sky-bg', G:'brown-perch' },
+    grid: [
+      'FFFFFFFAAAAFFFFF',
+      'FFFFBBBAAAAAFFFF',
+      'FFCBBBBDDAAAFFFF',
+      'FACBBBBDAAAAFFFF',
+      'AACBBBBEEAAAFFFF',
+      'FACBBBBEEEAAFFFF',
+      'FFFBBBBEEEAAFFFF',
+      'FFFFFFFEEEAAFFFF',
+      'FFFFFFFEEEAAFFFF',
+      'FFFFFFFAAAAAFFFF',
+      'FFFFFFFAAAAAFFFF',
+      'FFFFFFFAAFAAFFFF',
+      'GGGGGGGGGGGGGGGG',
+      'FFFFFFFFAAAFFFFF',
+      'FFFFFFFFAAAFFFFF',
+      'FFFFFFFFFFFFFFFF',
     ]},
 ];
 
@@ -1513,7 +2101,7 @@ const QUESTIONS = [
   { w: 'kingdom', ans: 'F', opts: ['貴族','宮殿','王子','王座','城堡','王國'] },
   { w: 'magic', ans: 'F', opts: ['吸血鬼','咒語','女巫','獨角獸','魔術師','魔法'] },
   { w: 'memory', ans: 'F', opts: ['宇宙','心智','午夜','銀河','精神','回憶'] },
-  { w: 'midnight', ans: 'F', opts: ['行星','回憶','星光','太空','心智','午夜'] },
+  { w: 'midnight', ans: 'F', opts: ['行星','回憶','星光','太空','心智','半夜'] },
   { w: 'mind', ans: 'F', opts: ['太空','靈魂','傍晚','夢','想法','心智'] },
   { w: 'monster', ans: 'F', opts: ['殭屍','法術','巫師','鳳凰','魔術師','怪物'] },
   { w: 'moon', ans: 'F', opts: ['宇宙','思想','夜晚','銀河','靈魂','月亮'] },
@@ -2057,80 +2645,105 @@ function puzzleWidth(pzi) { return PUZZLES[pzi].grid[0].length; }
 function puzzleHeight(pzi) { return PUZZLES[pzi].grid.length; }
 
 // 每關固定 25 題:多個格子共用一題,答一次全部同題號的格子一起著色
-const QUESTIONS_PER_PUZZLE = 25;
+const QUESTIONS_PER_PUZZLE = 50;
 
-function pickQuestionsForPuzzle(pzi) {
-  const g = PUZZLES[pzi].grid;
-  const flat = g.join('').split('');
-  const cellsByColor = {};
-  flat.forEach((letter, i) => {
-    if (letter === 'X') return;
-    (cellsByColor[letter] = cellsByColor[letter] || []).push(i);
-  });
-  const colorLetters = Object.keys(cellsByColor);
-  const totalCells = colorLetters.reduce((s, L) => s + cellsByColor[L].length, 0);
+// 決定性 PRNG (Mulberry32) — 讓每關的題目固定
+function mulberry32(seed) {
+  return function() {
+    seed = (seed + 0x6D2B79F5) >>> 0;
+    let t = seed;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
 
-  // 決定每個顏色分配幾題(至少 1 題,總和 = 25)
-  const qPerColor = {};
-  let totalQ = 0;
-  for (const L of colorLetters) {
-    qPerColor[L] = Math.max(1, Math.round(cellsByColor[L].length / totalCells * QUESTIONS_PER_PUZZLE));
-    totalQ += qPerColor[L];
-  }
-  // 微調到剛好 25
-  while (totalQ > QUESTIONS_PER_PUZZLE) {
-    let maxL = colorLetters[0];
-    for (const L of colorLetters) if (qPerColor[L] > qPerColor[maxL]) maxL = L;
-    if (qPerColor[maxL] <= 1) break;
-    qPerColor[maxL]--; totalQ--;
-  }
-  while (totalQ < QUESTIONS_PER_PUZZLE) {
-    let maxRatioL = colorLetters[0];
+// 一次算出全 40 關的題目分配,遵守「每個單字全域最多用 2 次」
+let _PUZZLE_QUESTION_PLAN = null;
+function buildAllPuzzlePlans() {
+  const plans = new Array(PUZZLES.length);
+  const useCounts = new Map();  // qi -> global count
+  for (let pzi = 0; pzi < PUZZLES.length; pzi++) {
+    const rand = mulberry32((pzi + 1) * 2654435761 >>> 0);
+    const flat = PUZZLES[pzi].grid.join('').split('');
+    const cellsByColor = {};
+    flat.forEach((L, i) => { if (L !== 'X') (cellsByColor[L] = cellsByColor[L] || []).push(i); });
+    const colorLetters = Object.keys(cellsByColor).sort();
+    const totalCells = colorLetters.reduce((s, L) => s + cellsByColor[L].length, 0);
+
+    const qPerColor = {};
+    let totalQ = 0;
     for (const L of colorLetters) {
-      const cur = cellsByColor[L].length / qPerColor[L];
-      const best = cellsByColor[maxRatioL].length / qPerColor[maxRatioL];
-      if (cur > best) maxRatioL = L;
+      qPerColor[L] = Math.max(1, Math.round(cellsByColor[L].length / totalCells * QUESTIONS_PER_PUZZLE));
+      totalQ += qPerColor[L];
     }
-    qPerColor[maxRatioL]++; totalQ++;
-  }
+    while (totalQ > QUESTIONS_PER_PUZZLE) {
+      let maxL = colorLetters[0];
+      for (const L of colorLetters) if (qPerColor[L] > qPerColor[maxL]) maxL = L;
+      if (qPerColor[maxL] <= 1) break;
+      qPerColor[maxL]--; totalQ--;
+    }
+    while (totalQ < QUESTIONS_PER_PUZZLE) {
+      let maxRatioL = colorLetters[0];
+      for (const L of colorLetters) {
+        const cur = cellsByColor[L].length / qPerColor[L];
+        const best = cellsByColor[maxRatioL].length / qPerColor[maxRatioL];
+        if (cur > best) maxRatioL = L;
+      }
+      qPerColor[maxRatioL]++; totalQ++;
+    }
 
-  // 每個顏色從題庫抽出對應張數,盡量避開其他關已用過的題,把該色的格子平均分派
-  const result = new Array(flat.length).fill(null);
-  // 重玩本關時,先把本關之前抽過的從全域 usedQuestions 移除,才有機會抽到「本關之前用過但其他關沒用過」的題
-  const myPrev = state.usedQuestionsByPuzzle[pzi] || new Set();
-  const globalUsed = new Set(state.usedQuestions);
-  myPrev.forEach(q => globalUsed.delete(q));
-  const thisPuzzleUsed = new Set();
-
-  for (const L of colorLetters) {
-    const allPool = QUESTIONS.map((q, idx) => q.ans === L ? idx : -1).filter(x => x >= 0);
-    // 先分兩層:未被其他關用過的優先,不夠再從已用過的補
-    const unused = allPool.filter(q => !globalUsed.has(q));
-    const used = allPool.filter(q => globalUsed.has(q));
-    const shuffle = (arr) => {
+    const seededShuffle = (arr) => {
       for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
+        const j = Math.floor(rand() * (i + 1));
         [arr[i], arr[j]] = [arr[j], arr[i]];
       }
     };
-    shuffle(unused); shuffle(used);
-    const pool = unused.concat(used);
-    const questionsForColor = pool.slice(0, qPerColor[L]);
-    questionsForColor.forEach(q => thisPuzzleUsed.add(q));
-    // 打散格子順序後 round-robin 分配
-    const cells = cellsByColor[L].slice();
-    for (let i = cells.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [cells[i], cells[j]] = [cells[j], cells[i]];
-    }
-    cells.forEach((cellIdx, k) => {
-      result[cellIdx] = questionsForColor[k % questionsForColor.length];
+
+    // 從全題庫抽出這關要用的所有題目 (不再按 q.ans 分池,顏色由格子的 grid letter 決定)
+    const result = new Array(flat.length).fill(null);
+    const usedInThisPuzzle = new Set();
+    // 全題庫按 global 使用次數分桶
+    const allPool = QUESTIONS.map((_, idx) => idx);
+    const buckets = {};
+    allPool.forEach(q => {
+      const c = useCounts.get(q) || 0;
+      (buckets[c] = buckets[c] || []).push(q);
     });
+    const bucketKeys = Object.keys(buckets).map(Number).sort((a, b) => a - b);
+    const ordered = [];
+    for (const k of bucketKeys) {
+      const b = buckets[k].slice();
+      seededShuffle(b);
+      ordered.push(...b);
+    }
+    // 依顏色依序抽題,保證同關不重複
+    let cursor = 0;
+    for (const L of colorLetters) {
+      const need = qPerColor[L];
+      const pick = [];
+      while (pick.length < need && cursor < ordered.length) {
+        const q = ordered[cursor++];
+        if (usedInThisPuzzle.has(q)) continue;
+        pick.push(q);
+        usedInThisPuzzle.add(q);
+      }
+      pick.forEach(q => useCounts.set(q, (useCounts.get(q) || 0) + 1));
+
+      const cells = cellsByColor[L].slice();
+      seededShuffle(cells);
+      cells.forEach((cellIdx, k) => {
+        result[cellIdx] = pick[k % pick.length];
+      });
+    }
+    plans[pzi] = result;
   }
-  // 更新全域紀錄
-  state.usedQuestionsByPuzzle[pzi] = thisPuzzleUsed;
-  thisPuzzleUsed.forEach(q => state.usedQuestions.add(q));
-  return result;
+  return plans;
+}
+
+function pickQuestionsForPuzzle(pzi) {
+  if (!_PUZZLE_QUESTION_PLAN) _PUZZLE_QUESTION_PLAN = buildAllPuzzlePlans();
+  return _PUZZLE_QUESTION_PLAN[pzi].slice();
 }
 
 // 依 role 名稱關鍵字查對應的固定色相(h/s/l)
@@ -2228,7 +2841,10 @@ function pickPalette(pzi) {
     const j = Math.floor(Math.random() * (i + 1));
     [others[i], others[j]] = [others[j], others[i]];
   }
-  const letters = LETTERS.filter(L => Array.from(usedLetters).concat(others).slice(0, 6).includes(L));
+  // 保證涵蓋所有用到的字母,額外補到 8 個做干擾色來源
+  const minPaletteSize = Math.max(8, usedLetters.size + 3);
+  const includeSet = new Set([...Array.from(usedLetters), ...others.slice(0, Math.max(0, minPaletteSize - usedLetters.size))]);
+  const letters = LETTERS.filter(L => includeSet.has(L));
   const roles = puzzle.colorRoles || {};
   const usedHues = [];
   const map = {};
@@ -2255,24 +2871,32 @@ function pickPalette(pzi) {
   return { letters, map };
 }
 
-function computeCellLayout(qi, palette) {
-  // 給每個題目算出:每個 palette 按鈕上要顯示哪個中文選項
+function computeCellLayout(qi, palette, targetL) {
+  // 每題只顯示 5 顆按鈕:正解 (指定放在 targetL 色)+ 4 個從本關 palette 隨機挑的干擾色
   const q = QUESTIONS[qi];
   const ansIdx = LETTERS.indexOf(q.ans);
   const correct = q.opts[ansIdx];
-  const distractors = q.opts.filter((_, i) => i !== ansIdx);
-  for (let i = distractors.length - 1; i > 0; i--) {
+  const others = palette.filter(L => L !== targetL);
+  for (let i = others.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [distractors[i], distractors[j]] = [distractors[j], distractors[i]];
+    [others[i], others[j]] = [others[j], others[i]];
   }
-  const layout = {};
-  layout[q.ans] = correct;
-  let k = 0;
-  for (const L of palette) {
-    if (L === q.ans) continue;
-    layout[L] = distractors[k++] || '(?)';
+  const distractorLetters = others.slice(0, 4);
+  const distractorOpts = q.opts.filter((_, i) => i !== ansIdx);
+  for (let i = distractorOpts.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [distractorOpts[i], distractorOpts[j]] = [distractorOpts[j], distractorOpts[i]];
   }
-  return layout;
+  const opts = {};
+  opts[targetL] = correct;
+  distractorLetters.forEach((L, k) => { opts[L] = distractorOpts[k] || '(?)'; });
+  // 隨機排 5 顆按鈕位置
+  const letters = [targetL, ...distractorLetters];
+  for (let i = letters.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [letters[i], letters[j]] = [letters[j], letters[i]];
+  }
+  return { letters, opts };
 }
 
 function startPuzzle(idx) {
@@ -2282,12 +2906,18 @@ function startPuzzle(idx) {
   state.palette = p.letters;
   state.paletteMap = p.map;
   state.cellAnswers = pickQuestionsForPuzzle(idx);
-  // 同一題的所有格子共用同一組選項排列 + 同一個本地題號 (1-25)
+  // 每個 cell 的 target color = grid letter
+  const gridFlat = PUZZLES[idx].grid.join('').split('');
+  state.cellTargets = gridFlat.map(L => L === 'X' ? null : L);
+  // 同一題的所有格子共用同一組選項排列 + 同一個本地題號 (1-50)
   const uniqueQis = Array.from(new Set(state.cellAnswers.filter(x => x !== null)));
   const layoutByQi = {};
   const qiToLocalNum = {};
   uniqueQis.forEach((qi, i) => {
-    layoutByQi[qi] = computeCellLayout(qi, state.palette);
+    // 找到這題對應的 target letter (第一個用它的 cell)
+    const cellIdx = state.cellAnswers.indexOf(qi);
+    const targetL = state.cellTargets[cellIdx];
+    layoutByQi[qi] = computeCellLayout(qi, state.palette, targetL);
     qiToLocalNum[qi] = i + 1;
   });
   state.qiToLocalNum = qiToLocalNum;
@@ -2341,7 +2971,7 @@ function revealAnswers() {
   for (let i = 0; i < state.cellAnswers.length; i++) {
     const qi = state.cellAnswers[i];
     if (qi === null) continue;
-    state.cellChosen[i] = QUESTIONS[qi].ans;
+    state.cellChosen[i] = state.cellTargets[i];
   }
   state.checked = false;
   render();
@@ -2353,7 +2983,7 @@ function wrongCount() {
   for (let i = 0; i < state.cellAnswers.length; i++) {
     const qi = state.cellAnswers[i];
     if (qi === null) continue;
-    if (state.cellChosen[i] && state.cellChosen[i] !== QUESTIONS[qi].ans) wrongQis.add(qi);
+    if (state.cellChosen[i] && state.cellChosen[i] !== state.cellTargets[i]) wrongQis.add(qi);
   }
   return wrongQis.size;
 }
@@ -2396,7 +3026,7 @@ function renderMenu() {
       <div class="text-6xl md:text-7xl mb-4">🎨</div>
       <h1 class="display-font text-5xl md:text-6xl font-extrabold title-gradient mb-4 leading-tight">著色英文闖關</h1>
       <p class="text-lg md:text-xl font-semibold text-slate-300">選對單字 · 召喚出可愛圖案 ✨</p>
-      <p class="text-sm mt-3 text-slate-400">國中程度英文 · 每關 25 題 · 尺寸 15×15</p>
+      <p class="text-sm mt-3 text-slate-400">國中程度英文 · 每關 50 題 · 尺寸 15×15 / 16×16</p>
     </header>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 max-w-4xl mx-auto">
       ${PUZZLES.map((p, i) => {
@@ -2446,7 +3076,7 @@ function renderPlay() {
     }
     const qi = state.cellAnswers[i];
     const chosen = state.cellChosen[i];
-    const correct = chosen && chosen === QUESTIONS[qi].ans;
+    const correct = chosen && chosen === state.cellTargets[i];
     const localNum = String(state.qiToLocalNum[qi] || '?');
     let bg = '#ffffff';
     let inner = `<span style="color:#94a3b8">${localNum}</span>`;
@@ -2490,10 +3120,9 @@ function renderPlay() {
             </div>
           </div>
           <div class="grid grid-cols-2 gap-3.5 w-full">
-            ${state.palette.map(L => {
+            ${(state.cellLayouts[state.currentCell].letters).map(L => {
               const c = state.paletteMap[L];
-              const layout = state.cellLayouts[state.currentCell];
-              const opt = layout[L];
+              const opt = state.cellLayouts[state.currentCell].opts[L];
               const dark = darkenHex(c.hex, 0.65);
               const alpha = c.hex + '59';
               return `<button onclick="answerCell('${L}')" class="btn-3d opt-btn py-3 px-2 text-base flex items-center justify-center"
