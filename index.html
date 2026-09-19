@@ -1560,11 +1560,12 @@ function renderPlay() {
           <p>↻ 隨時再點格子改答案</p>
           <p>✓ 全部填完後檢查答案</p>
         </div>
+        ${new URLSearchParams(location.search).has('debug') ? `
         <hr class="my-4 border-slate-700">
         <button onclick="revealAnswers()" class="text-xs w-full py-2 px-3 rounded-lg text-purple-300 hover:text-purple-200 transition"
                 style="background:rgba(168,85,247,0.1);border:1px dashed rgba(168,85,247,0.35)">
           🔧 顯示答案(測試)
-        </button>
+        </button>` : ''}
       </aside>
     </div>
 
